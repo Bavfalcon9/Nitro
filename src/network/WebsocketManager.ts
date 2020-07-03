@@ -21,7 +21,7 @@ class WebsocketManager {
     public async init(client: Client): Promise<void> {
         this._client = client;
         try {
-            console.log('Connecting to socket...');
+            this._logger.notice('Connecting...');
             this._ws = await connectWebSocket(Constants.GATEWAY);
             for await (const m of this._ws) {
                 try {

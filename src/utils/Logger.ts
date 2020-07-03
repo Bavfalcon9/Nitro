@@ -9,6 +9,7 @@ class Logger {
     }
 
     public debug(msg: string): void {
+        if (!Logger.DEBUG_ENABLED) return;
         const named: string = `[${this.name}/DEBUG]: `;
         this.colorLog(named + msg, Colors.Dim);
         return;
@@ -22,7 +23,7 @@ class Logger {
 
     public notice(msg: string): void {
         const named: string = `[${this.name}/NOTICE]: `;
-        this.colorLog(named + msg, Colors.FgCyan);
+        this.colorLog(named + msg, Colors.FgBlue);
         return;
     }
 

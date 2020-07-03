@@ -3,11 +3,12 @@ import ProtectedDataStore from "./stores/ProtectedDataStore.ts";
 import WebsocketManager from "./network/WebsocketManager.ts";
 import HeartBeatPacket from "./discord/packets/HeartBeatPacket.ts";
 import Packet from "./discord/packets/Packet.ts";
-
+import ClientUser from './ClientUser.ts'
 class Client extends EventEmitter {
     private wsm?: WebsocketManager;
     private heartInterval?: number;
 
+    public _user!: ClientUser;
     public connect(token: string): void {
         if (this.wsm !== undefined) {
             throw new Error('Client already connected! Please terminate the existing connection.');
@@ -33,6 +34,14 @@ class Client extends EventEmitter {
 
     public async sendPacket(pk: Packet): Promise<void> {
         return await this.wsm?.send(pk.parsePacket());
+    }
+
+
+    set user(user: ClientUser) {
+        this._user = user;
+    }
+    get user(): ClientUser {
+        return this._user
     }
 }
 export default Client;

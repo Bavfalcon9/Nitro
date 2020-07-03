@@ -1,13 +1,12 @@
 import { WebSocket as ws, connectWebSocket as cws, connectWebSocket, isWebSocketCloseEvent } from 'https://deno.land/std/ws/mod.ts';
-import Constants from '../discord/Constants.ts';
 import Client from '../Client.ts';
-import Payload from '../discord/interfaces/Payload.ts';
-import Packet from '../discord/packets/Packet.ts';
-import OPCodes from '../discord/interfaces/OPCodes.ts';
-import HeartBeatPacket from '../discord/packets/HeartBeatPacket.ts';
-import LoginPacket from '../discord/packets/LoginPacket.ts';
+import Constants from './discord/Constants.ts';
+import Payload from './discord/interfaces/Payload.ts';
+import Packet from './discord/packets/Packet.ts';
+import OPCodes from './discord/interfaces/OPCodes.ts';
+import HeartBeatPacket from './discord/packets/HeartBeatPacket.ts';
+import LoginPacket from './discord/packets/LoginPacket.ts';
 import ProtectedDataStore from '../stores/ProtectedDataStore.ts';
-import EventHandler from '../events/EventHandler.ts';
 
 class WebsocketManager {
     private _ws!: ws;
@@ -39,10 +38,7 @@ class WebsocketManager {
                             // todo https://discord.com/developers/docs/topics/gateway#resume-example-resume
                             break;
                         case OPCodes.DISPATCH: // This means an event has occured (i.e READY, GUILDCREATE)
-                            if(payload) {
-                                const e = new EventHandler(payload, client);
-                                e.handleEvent();
-                            }
+                            this._client.emit(payload.t || 'unknown', payload.d);
                             break;
                         default:
                             console.log(`Unknown Packet! ${payload.op}`);

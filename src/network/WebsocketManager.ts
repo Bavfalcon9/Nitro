@@ -8,6 +8,7 @@ import HeartBeatPacket from './discord/packets/HeartBeatPacket.ts';
 import LoginPacket from './discord/packets/LoginPacket.ts';
 import ProtectedDataStore from '../stores/ProtectedDataStore.ts';
 import Logger from '../utils/Logger.ts';
+import EventPacket from './discord/packets/EventPacket.ts';
 
 class WebsocketManager {
     private _ws!: ws;
@@ -21,7 +22,7 @@ class WebsocketManager {
     public async init(client: Client): Promise<void> {
         this._client = client;
         try {
-            this._logger.notice('Connecting...');
+            this._logger.debug('Connecting...');
             this._ws = await connectWebSocket(Constants.GATEWAY);
             for await (const m of this._ws) {
                 try {
@@ -30,25 +31,24 @@ class WebsocketManager {
                         throw m.code;
                     }
                     const payload: Payload = JSON.parse(m.toString());
-                    switch (payload.op) {
-                        case OPCodes.HELLO:
-                            const pk: HeartBeatPacket = HeartBeatPacket.fromPayload(payload);
-                            this._client.initHeartbeat(pk.interval);
-                            await this._client.sendPacket(new LoginPacket(ProtectedDataStore.token));
-                            break;
-                        case OPCodes.RESUME: 
-                            // todo https://discord.com/developers/docs/topics/gateway#resume-example-resume
-                            break;
-                        case OPCodes.DISPATCH: // This means an event has occured (i.e READY, GUILDCREATE)
-                            this._client.emit(payload.t || 'unknown', payload.d);
-                            break;
-                        default:
-                            this._logger.debug(`Unknown Packet! ${payload.op}`);
-                            // console.log(JSON.parse(m.toString()));
-                            break;
+                    this._client.emit('raw', payload);
+                    if (payload.op === OPCodes.HELLO) {
+                        this._logger.debug('Connected!');
+                        const pk: HeartBeatPacket = HeartBeatPacket.fromPayload(payload);
+                        this._client.initHeartbeat(pk.interval);
+                        await this._client.sendPacket(new LoginPacket(ProtectedDataStore.token));
+                    } else if (payload.op === OPCodes.RESUME) {
+                        // todo https://discord.com/developers/docs/topics/gateway#resume-example-resume
+                    } else if (payload.op === OPCodes.DISPATCH) {
+                        const pk: EventPacket = EventPacket.fromPayload(payload);
+                        
+                    } else if (payload.op === OPCodes.HEARTBEAT_ACK) {
+                        this._client._lastACK = Date.now();
+                    } else {
+                        this._logger.debug(`Unknown Packet! ${payload.op}`);
                     }
                 } catch (err) {
-                    this._ws.closeForce();
+                    this.terminate();
                     throw err;
                 }
             }
@@ -58,7 +58,21 @@ class WebsocketManager {
     }
 
     public async send(payload: Payload): Promise<void> {
-        return await this._ws.send(JSON.stringify(payload));
+        try {
+            await this._ws.send(JSON.stringify(payload));
+        } catch (e) {
+
+        }
+    }
+
+    public async terminate() {
+        try {
+            await this._ws.close();
+            this._logger.debug('Socket closed.');
+        } catch (e) {
+            this._ws.closeForce();
+            this._logger.debug("Socket closed.");
+        }
     }
 }
 

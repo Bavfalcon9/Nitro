@@ -10,6 +10,12 @@ class Client extends EventEmitter {
     private heartInterval?: number;
 
     public _user!: ClientUser;
+    public _lastACK?: number;
+
+    constructor() {
+        super();
+    }
+
     public connect(token: string): void {
         if (this.wsm !== undefined) {
             throw new Error('Client already connected! Please terminate the existing connection.');
@@ -31,6 +37,19 @@ class Client extends EventEmitter {
         this.heartInterval = setInterval(() => {
             this.sendPacket(new HeartBeatPacket(interval));
         }, interval);
+    }
+
+    public reconnect(): void {
+        // to do
+    }
+
+    public disconnect(): void {
+        if (this.wsm === undefined) throw 'Client already disconnected.';
+        this.wsm?.terminate();
+        this.wsm = undefined;
+        clearInterval(this.heartInterval);
+        this.heartInterval = undefined;
+        // to do: options
     }
 
     public async sendPacket(pk: Packet): Promise<void> {

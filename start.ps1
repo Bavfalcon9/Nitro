@@ -1,3 +1,4 @@
+param ($file='./tests/MainTest.ts')
 Function CheckDeno {
     try {
         if (Get-Command deno.exe) {
@@ -10,9 +11,10 @@ Function CheckDeno {
     }
 }
 if (CheckDeno) {
-    Write-Host "Starting Tests..." -ForegroundColor Yellow
-    deno.exe run -A ./tests/MainTest.ts
+    Write-Host "Executing script with deno" -ForegroundColor Yellow
+    deno.exe run -A $file
 } else {
     Invoke-WebRequest https://deno.land/x/install/install.ps1 -useb | Invoke-Expression
-    Write-Host "Deno installed! Run ./start.ps1 again to start Test." -ForegroundColor Green
+    Write-Host "Deno installed! Running project now!" -ForegroundColor Green
+    deno.exe run -A $file
 }

@@ -1,5 +1,5 @@
 import Client from '../src/Client.ts';
-import { token } from '../config.json';
+const { token } = await JSON.parse(Deno.readTextFileSync(Deno.cwd() + "/config.json"));
 const bot: Client = new Client();
 
 bot.connect(token);

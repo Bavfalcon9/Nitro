@@ -31,7 +31,7 @@ class WebsocketManager {
                     const payload: Payload = JSON.parse(m.toString());
                     switch (payload.op) {
                         case OPCodes.HELLO:
-                            const pk: HeartBeatPacket = new HeartBeatPacket(payload.d.heartbeat_interval || 0);
+                            const pk: HeartBeatPacket = HeartBeatPacket.fromPayload(payload);
                             this._client.initHeartbeat(pk.interval);
                             await this._client.sendPacket(new LoginPacket(ProtectedDataStore.token));
                             break;
@@ -43,6 +43,7 @@ class WebsocketManager {
                                 const e = new EventHandler(payload, client);
                                 e.handleEvent();
                             }
+                            break;
                         default:
                             console.log(`Unknown Packet! ${payload.op}`);
                             // console.log(JSON.parse(m.toString()));

@@ -1,9 +1,9 @@
 import { EventEmitter } from "https://deno.land/std/node/events.ts";
-import ProtectedDataStore from "./stores/ProtectedDataStore.ts";
-import WebsocketManager from "./network/WebsocketManager.ts";
 import HeartBeatPacket from "./discord/packets/HeartBeatPacket.ts";
+import WebsocketManager from "./network/WebsocketManager.ts";
+import ProtectedDataStore from "./stores/ProtectedDataStore.ts";
+import ClientUser from './structures/ClientUser.ts'
 import Packet from "./discord/packets/Packet.ts";
-import ClientUser from './ClientUser.ts'
 class Client extends EventEmitter {
     private wsm?: WebsocketManager;
     private heartInterval?: number;

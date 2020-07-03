@@ -10,8 +10,8 @@ class User extends Base {
         super(data.id);
         this.bot = data.bot;
         this.username = data.username;
-        this.discriminator = data.username;
-        this.avatar = data.username;
+        this.discriminator = data.discriminator;
+        this.avatar = data.avatar;
     }
 
     public get tag(): string {

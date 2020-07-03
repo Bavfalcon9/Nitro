@@ -7,13 +7,15 @@ import OPCodes from './discord/interfaces/OPCodes.ts';
 import HeartBeatPacket from './discord/packets/HeartBeatPacket.ts';
 import LoginPacket from './discord/packets/LoginPacket.ts';
 import ProtectedDataStore from '../stores/ProtectedDataStore.ts';
+import Logger from '../utils/Logger.ts';
 
 class WebsocketManager {
     private _ws!: ws;
     private _client!: Client;
+    private _logger: Logger;
 
     constructor() {
-
+        this._logger = new Logger('Nitro-WebSocket');
     }
 
     public async init(client: Client): Promise<void> {
@@ -41,7 +43,7 @@ class WebsocketManager {
                             this._client.emit(payload.t || 'unknown', payload.d);
                             break;
                         default:
-                            console.log(`Unknown Packet! ${payload.op}`);
+                            this._logger.debug(`Unknown Packet! ${payload.op}`);
                             // console.log(JSON.parse(m.toString()));
                             break;
                     }

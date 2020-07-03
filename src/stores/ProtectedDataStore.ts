@@ -3,7 +3,7 @@ class ProtectedDataStore {
 
     hash(key: string, value: any): string {
         if(typeof value == 'object') {
-            JSON.parse(value);
+            JSON.stringify(value);
         }
         let protectedStream: string = '';
         for (let i of value) {

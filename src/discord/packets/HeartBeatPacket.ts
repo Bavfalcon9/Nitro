@@ -9,6 +9,7 @@ class HeartBeatPacket extends Packet {
     }
 
     protected encode(): void {
+        this.data = this.interval;
     }
 }
 

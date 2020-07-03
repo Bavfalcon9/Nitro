@@ -1,10 +1,12 @@
-import { WebSocket as ws, connectWebSocket as cws, connectWebSocket } from 'https://deno.land/std/ws/mod.ts';
+import { WebSocket as ws, connectWebSocket as cws, connectWebSocket, isWebSocketCloseEvent } from 'https://deno.land/std/ws/mod.ts';
 import Constants from '../discord/Constants.ts';
 import Client from '../Client.ts';
 import Payload from '../discord/interfaces/Payload.ts';
 import Packet from '../discord/packets/Packet.ts';
 import OPCodes from '../discord/interfaces/OPCodes.ts';
 import HeartBeatPacket from '../discord/packets/HeartBeatPacket.ts';
+import LoginPacket from '../discord/packets/LoginPacket.ts';
+import ProtectedDataStore from '../stores/ProtectedDataStore.ts';
 
 class WebsocketManager {
     private _ws!: ws;
@@ -17,31 +19,41 @@ class WebsocketManager {
     public async init(client: Client): Promise<void> {
         this._client = client;
         try {
+            console.log('Connecting to socket...');
             this._ws = await connectWebSocket(Constants.GATEWAY);
-
             for await (const m of this._ws) {
                 try {
-                    const payload: Payload = JSON.parse(m.toString());
-                    if (payload.op === OPCodes.HELLO) {
-                        const pk: HeartBeatPacket = new HeartBeatPacket(payload.d.heartbeat_interval || 0);
-                        this._client.initHeartbeat(pk.interval);
-                        return;
+                    if (isWebSocketCloseEvent(m)) {
+                        // to do handle bad connections properly
+                        throw m.code;
                     }
-                    if (payload.op === OPCodes.RESUME) {
-                        // todo
+                    const payload: Payload = JSON.parse(m.toString());
+                    switch (payload.op) {
+                        case OPCodes.HELLO:
+                            const pk: HeartBeatPacket = new HeartBeatPacket(payload.d.heartbeat_interval || 0);
+                            this._client.initHeartbeat(pk.interval);
+                            await this._client.sendPacket(new LoginPacket(ProtectedDataStore.token));
+                            break;
+                        case OPCodes.RESUME: 
+                            // todo https://discord.com/developers/docs/topics/gateway#resume-example-resume
+                            break;
+                        default:
+                            console.log('Unknown Packet!');
+                            console.log(m.toString());
+                            break;
                     }
                 } catch (err) {
                     this._ws.closeForce();
-                    throw 'WS error: ' + err;
+                    throw err;
                 }
             }
         } catch (err) {
-
+            throw err;
         }
     }
 
-    public send(payload: Payload) {
-        this._ws.send(JSON.stringify(payload));
+    public async send(payload: Payload): Promise<void> {
+        return await this._ws.send(JSON.stringify(payload));
     }
 }
 

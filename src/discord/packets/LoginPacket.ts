@@ -15,7 +15,8 @@ class LoginPacket extends Packet {
                 $os: Deno.build.os,
                 $browser: "NitroTS",
                 $device: "github.com/Bavfalcon9/Nitro",
-            },
+            }
+            // todo: https://discord.com/developers/docs/topics/gateway#identify-example-identify
         };
     }
 }

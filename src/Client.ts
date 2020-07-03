@@ -1,8 +1,8 @@
 import { EventEmitter } from "https://deno.land/std/node/events.ts";
 import ProtectedDataStore from "./stores/ProtectedDataStore.ts";
 import WebsocketManager from "./network/WebsocketManager.ts";
-import HeartBeatPacket from "./discord/packets/HeartBeatPacket";
-import Packet from "./discord/packets/Packet";
+import HeartBeatPacket from "./discord/packets/HeartBeatPacket.ts";
+import Packet from "./discord/packets/Packet.ts";
 
 class Client extends EventEmitter {
     private wsm?: WebsocketManager;
@@ -28,11 +28,11 @@ class Client extends EventEmitter {
         }
         this.heartInterval = setInterval(() => {
             this.sendPacket(new HeartBeatPacket(interval));
-        });
+        }, interval);
     }
 
-    public sendPacket(pk: Packet): void {
-        this.wsm?.send(pk.parsePacket());
+    public async sendPacket(pk: Packet): Promise<void> {
+        return await this.wsm?.send(pk.parsePacket());
     }
 }
 export default Client;

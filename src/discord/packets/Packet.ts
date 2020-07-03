@@ -2,7 +2,7 @@ import OPCodes from "../interfaces/OPCodes.ts";
 import Payload from "../interfaces/Payload.ts";
 
 abstract class Packet {
-    protected opCode: OPCodes = OPCodes.DISPATCH;
+    private opCode: OPCodes;
     protected data: any = {};
     protected type?: string;
 

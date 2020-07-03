@@ -1,10 +1,10 @@
 import Base from "./Base.ts";
 
 class User extends Base {
-    private bot: boolean;
-    private username: string;
-    private discriminator: string;
-    private avatar: string;
+    public bot: boolean;
+    public username: string;
+    public discriminator: string;
+    public avatar: string;
 
     constructor(data: any) {
         super(data.id);

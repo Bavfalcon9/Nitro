@@ -5,13 +5,15 @@ import ProtectedDataStore from "./stores/ProtectedDataStore.ts";
 import ClientUser from './structures/ClientUser.ts'
 import Packet from "./network/discord/packets/Packet.ts";
 import EventHandler from "./events/EventHandler.ts";
+import User from "./structures/User.ts";
+import Message from "./structures/Message.ts";
 
 class Client {
 
     public _user!: ClientUser;
     public _lastACK?: number;
     public _eventsHandle: EventHandler;
-    public events?: Evt;
+    public events?: Evt<User|Message>;
     private wsm?: WebsocketManager;
     private heartInterval?: number;
 

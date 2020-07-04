@@ -31,7 +31,7 @@ class WebsocketManager {
                         throw m.code;
                     }
                     const payload: Payload = JSON.parse(m.toString());
-                    this._client.emit('raw', payload);
+                    this._client._eventsHandle.rawEvent?.post(payload);
                     if (payload.op === OPCodes.HELLO) {
                         this._logger.debug('Connected!');
                         const pk: HeartBeatPacket = HeartBeatPacket.fromPayload(payload);

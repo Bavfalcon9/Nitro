@@ -1,4 +1,9 @@
 # Lol we dont use this
 node_modules/*
 
+# IDE's
+.idea/*
+.vscode/*
+
+# Configs
 config.json

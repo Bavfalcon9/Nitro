@@ -1,19 +1,23 @@
-import { EventEmitter } from "https://deno.land/std/node/events.ts";
+import { Evt } from "https://deno.land/x/evt/mod.ts";
 import HeartBeatPacket from "./network/discord/packets/HeartBeatPacket.ts";
 import WebsocketManager from "./network/WebsocketManager.ts";
 import ProtectedDataStore from "./stores/ProtectedDataStore.ts";
 import ClientUser from './structures/ClientUser.ts'
 import Packet from "./network/discord/packets/Packet.ts";
+import EventHandler from "./events/EventHandler.ts";
 
-class Client extends EventEmitter {
-    private wsm?: WebsocketManager;
-    private heartInterval?: number;
+class Client {
 
     public _user!: ClientUser;
     public _lastACK?: number;
+    public _eventsHandle: EventHandler;
+    public events?: Evt;
+    private wsm?: WebsocketManager;
+    private heartInterval?: number;
 
     constructor() {
-        super();
+        this._eventsHandle = new EventHandler();
+        this.events = this._eventsHandle.init();
     }
 
     public connect(token: string): void {

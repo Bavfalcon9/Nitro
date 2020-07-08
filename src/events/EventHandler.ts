@@ -1,23 +1,33 @@
-import { Evt } from "https://deno.land/x/evt/mod.ts";
 import EventPacket from "../network/discord/packets/EventPacket.ts";
 import Payload from "../network/discord/interfaces/Payload.ts";
 import Message from "../structures/Message.ts";
 import User from "../structures/User.ts";
+import Client from "../Client.ts";
 
 class EventHandler {
-    public rawEvent?: Evt<Payload>;
-    constructor() {
-        this.rawEvent = new Evt<Payload>();
+    private KNOWN_EVENTS_MAP: any = {
+        "": ""
+    }
+    private client: Client;
+    constructor(client: Client) {
+        this.client = client;
     }
 
-    public init(): Evt<Message|User> {
-        const messageEvent: Evt<Message> = new Evt<Message>();
-        const userUpdate: Evt<User> = new Evt<User>();
-        return Evt.merge([messageEvent, userUpdate]);
+    /**
+     * initializes the event handler
+     */
+    public init() {
+        
     }
 
-    public handleEvent(pk: EventPacket): void {
-        const event: string = pk.event;
+    public handleEvent(name: string, data: Payload): void {
+        const keys: string[] = Object.keys(this.KNOWN_EVENTS_MAP);
+        if (!keys.includes(name)) {
+            // unknown event emitted
+            console.log('unknown event sent');
+        } else {
+            this.client.emit(this.KNOWN_EVENTS_MAP[name], data.d);
+        }
     }
 }
 export default EventHandler;

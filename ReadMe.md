@@ -7,7 +7,7 @@ import * as Nitro from 'Nitro';
 const client: Nitro.Client = new Nitro.Client();
 client.connect('mytoken');
 // listening to our event
-client.events.attach((message: Nitro.Message) => {
+client.on('message', (message: Nitro.Message) => {
     switch (message.getCommand('.')) {
         default:
         case null:

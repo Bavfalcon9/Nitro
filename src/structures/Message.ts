@@ -14,6 +14,7 @@ class Message extends Base {
     public channel: string;
     public author: User;
     public attachments: any[]; // Leave as any for now
+    public args?: string[];
 
     constructor(data: any) {
         super(data.id);
@@ -30,7 +31,27 @@ class Message extends Base {
         this.content = data.content;
         this.channel = data.channel;
         this.author = new User(data.author);
-        this.attachments = data.attachments;
+        this.attachments = data.attachments; 
+    }
+
+    /**
+     * Gets the command for the message sent!
+     * This function also sets the arguments of the command for you! (pretty neat, huh?)
+     */
+    public getCommand(prefix: string = '!'): string|null {
+        if (this.content && this.content.indexOf(prefix) === 0) {
+            this.args = this.content.slice(prefix.length).trim().split(/ +/g);
+            return this.args?.shift()?.toLowerCase() || '';
+        }
+        return null;
+    }
+
+    /**
+     * Send a message in response into the origin channel.
+     * @param msg - Message
+     */
+    public async send(msg: string): Promise<void> {
+        return;
     }
 }
 export default Message;

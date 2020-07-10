@@ -41,7 +41,7 @@ class WebsocketManager {
                         // todo https://discord.com/developers/docs/topics/gateway#resume-example-resume
                     } else if (payload.op === OPCodes.DISPATCH) {
                         const pk: EventPacket = EventPacket.fromPayload(payload);
-                        
+                        this._client._eventsHandle.handleEvent(pk);
                     } else if (payload.op === OPCodes.HEARTBEAT_ACK) {
                         this._client._lastACK = Date.now();
                     } else {

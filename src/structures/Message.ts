@@ -29,7 +29,7 @@ class Message extends Base {
         this.embeds = data.embeds;
         this.content = data.content;
         this.channel = data.channel;
-        this.author = data.author;
+        this.author = new User(data.author);
         this.attachments = data.attachments;
     }
 }

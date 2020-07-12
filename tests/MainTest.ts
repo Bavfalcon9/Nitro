@@ -13,6 +13,7 @@ const { token } = await JSON.parse(Deno.readTextFileSync(Deno.cwd() + "/config.j
 bot.on('message', (msg: Message) => {
      // success!
      console.log('Valid message! ' + msg.id);
+     console.log(msg.channel.name);
      console.log(msg.getCommand("?"));
      switch (msg.getCommand('?')) {
           case 'ping':

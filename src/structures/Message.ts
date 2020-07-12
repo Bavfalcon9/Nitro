@@ -1,5 +1,7 @@
 import User from './User.ts'
 import Base from './Base.ts';
+import Channel from './channel/Channel.ts';
+import TextChannel from './channel/TextChannel.ts';
 class Message extends Base {
     public type: number;
     public tts: boolean;
@@ -11,12 +13,13 @@ class Message extends Base {
     public embeds: any[]; // Leave as any for now
     public edited_timestamp: any;
     public content: string;
-    public channel: string;
+    public channel_id: string;
+    public channel: TextChannel;
     public author: User;
     public attachments: any[]; // Leave as any for now
     public args?: string[];
 
-    constructor(data: any) {
+    constructor(data: any, channel?: TextChannel) {
         super(data.id);
         // probably should add something that autoconstrcuts payloads based on data.
         // To Do: Restructure.
@@ -29,7 +32,8 @@ class Message extends Base {
         this.flags = data.flags;
         this.embeds = data.embeds;
         this.content = data.content;
-        this.channel = data.channel;
+        this.channel_id = data.channel_id;
+        this.channel = channel || new TextChannel(TextChannel.dummyObject);
         this.author = new User(data.author);
         this.attachments = data.attachments; 
     }

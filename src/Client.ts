@@ -7,11 +7,13 @@ import Packet from "./network/discord/packets/Packet.ts";
 import EventHandler from "./events/EventHandler.ts";
 import User from "./structures/User.ts";
 import Message from "./structures/Message.ts";
+import CacheManager from './cache/CacheManager.ts';
 
 class Client extends EventEmitter {
     public _user!: ClientUser;
     public _lastACK?: number;
     public _eventsHandle: EventHandler;
+    public _cacheManager: CacheManager;
     private wsm?: WebsocketManager;
     private heartInterval?: number;
 
@@ -19,6 +21,11 @@ class Client extends EventEmitter {
         super();
         this._eventsHandle = new EventHandler(this);
         this._eventsHandle.init();
+        this._cacheManager = new CacheManager(this, {});
+    }
+
+    public get users(): Map<string, User> {
+        return this._cacheManager.users;
     }
 
     public connect(token: string): void {

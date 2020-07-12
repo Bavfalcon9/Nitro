@@ -5,6 +5,8 @@ import User from "../structures/User.ts";
 import Client from "../Client.ts";
 import ClientUser from "../structures/ClientUser.ts";
 import Logger from "../utils/Logger.ts";
+import Channel from "../structures/channel/Channel.ts";
+import TextChannel from "../structures/channel/TextChannel.ts";
 
 class EventHandler {
     private client: Client;
@@ -47,8 +49,30 @@ class EventHandler {
      * Called when the gateway calls MESSAGE
      */
     public onMessageCreate(data: any): void {
-        const message = new Message(data);
+        const message = new Message(data, this.client._cacheManager.textChannels.get(data.channel_id));
         this.client.emit('message', message);
+    }
+
+    public onChannelCreate(data: any): void {
+        switch (Channel.getTypeString(data.type)) {
+            case 'text':
+                this.client._cacheManager.add(new TextChannel(data));
+        }
+    }
+
+    public onChanneUpdate(data: any): void {
+        switch (Channel.getTypeString(data.type)) {
+            case 'text':
+                this.client._cacheManager.add(new TextChannel(data));
+        }
+    }
+
+    public onGuildCreate(data: any): void {
+        data.channels.forEach((c: any) => this.onChanneUpdate(c));
+    }
+
+    public onGuildUpdate(data: any): void {
+        data.channels.forEach((c: any) => this.onChanneUpdate(c));
     }
 }
 export default EventHandler;

@@ -17,7 +17,7 @@ class Message extends Base {
     public channel: TextChannel;
     public author: User;
     public attachments: any[]; // Leave as any for now
-    public args?: string[];
+    public args: string[];
 
     constructor(data: any, channel?: TextChannel) {
         super(data.id);
@@ -35,7 +35,8 @@ class Message extends Base {
         this.channel_id = data.channel_id;
         this.channel = channel || new TextChannel(TextChannel.dummyObject);
         this.author = new User(data.author);
-        this.attachments = data.attachments; 
+        this.attachments = data.attachments;
+        this.args = [];
     }
 
     /**
@@ -45,7 +46,7 @@ class Message extends Base {
     public getCommand(prefix: string = '!'): string|null {
         if (this.content && this.content.indexOf(prefix) === 0) {
             this.args = this.content.slice(prefix.length).trim().split(/ +/g);
-            return this.args?.shift()?.toLowerCase() || '';
+            return this.args.shift()?.toLowerCase() || '';
         }
         return null;
     }

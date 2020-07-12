@@ -12,13 +12,21 @@ if (!await exists(file)) {
 const { token } = await JSON.parse(Deno.readTextFileSync(Deno.cwd() + "/config.json"));
 bot.on('message', (msg: Message) => {
      // success!
-     console.log('Valid message! ' + msg.id);
-     console.log(msg.channel.name);
-     console.log(msg.getCommand("?"));
      switch (msg.getCommand('?')) {
           case 'ping':
                console.log(':)');
                return;
+          case 'stop':
+               if (msg.author.id === '281530702590246914') {
+                    if (msg.args[0] === 'please') {
+                         bot.disconnect();
+                         console.log('Stopped!!!');
+                         Deno.exit(0);
+                    }
+               }
+               break;
+          case 'channel':
+               console.log(msg.channel.name);
           default:
                return;
      }

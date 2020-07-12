@@ -16,12 +16,12 @@ class TextChannel extends Channel {
           this.guildId = data.guild_id;
           this.name = data.name;
           this.position = data.position;
-          this.permissionOverwrites = data.permissionOverwrites;
-          this.rateLimit = data.rateLimit;
+          this.permissionOverwrites = data.permission_overwrites;
+          this.rateLimit = data.rate_limit_per_user;;
           this.nsfw = data.nsfw;
           this.topic = data.topic;
-          this.lastMessageId = data.lastMessageId;
-          this.parentId = data.parentId;
+          this.lastMessageId = data.last_message_id;
+          this.parentId = data.parent_id;
      }
 
      public static dummyObject(): TextChannel {

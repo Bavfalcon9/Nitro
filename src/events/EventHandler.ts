@@ -68,7 +68,10 @@ class EventHandler {
     }
 
     public onGuildCreate(data: any): void {
-        data.channels.forEach((c: any) => this.onChanneUpdate(c));
+        data.channels.forEach((c: any) => {
+            c.guild_id = data.id;
+            this.onChanneUpdate(c)
+        });
     }
 
     public onGuildUpdate(data: any): void {

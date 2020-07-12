@@ -12,6 +12,7 @@ if (!await exists(file)) {
 const { token } = await JSON.parse(Deno.readTextFileSync(Deno.cwd() + "/config.json"));
 bot.on('message', (msg: Message) => {
      // success!
+     console.log(msg.channel);
      switch (msg.getCommand('?')) {
           case 'ping':
                console.log(':)');

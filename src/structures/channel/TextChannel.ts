@@ -1,4 +1,7 @@
 import Channel from "./Channel.ts";
+import MessageContent from "../../network/discord/interfaces/MessageContent.ts";
+import Endpoints from "../../rest/Endpoints.ts";
+import RequestManager from "../../rest/RequestManager.ts";
 
 class TextChannel extends Channel {
      public guildId: string;
@@ -36,6 +39,17 @@ class TextChannel extends Channel {
                topic: '0',
                lastMessageId: '0',
                parentId: '0'
+          });
+     }
+
+     public send(content: string|MessageContent): Promise<void> {
+          if (typeof content === 'string') {
+               content = { content: content };
+          }
+          
+          return RequestManager.request(Endpoints.REST_BASE_URL + Endpoints.CHANNEL_MESSAGES(this.id), {
+               body: JSON.stringify(content),
+               method: 'POST'
           });
      }
 }

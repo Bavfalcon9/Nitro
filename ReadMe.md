@@ -1,5 +1,12 @@
 # Nitro - A fast framework built for the DiscordAPI
+Nitro is a Deno wrapper for the discord api.
+<br />
 
+#### Features:
+- Fast and extensible
+- No dependencies
+- Object Oriented
+- Made in typescript :heart: 
 ## Getting started
 For those who want to get something up, heres a little example on how to use the framework.
 ```ts

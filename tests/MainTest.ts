@@ -10,24 +10,27 @@ if (!await exists(file)) {
      Deno.exit(0);
 }
 const { token } = await JSON.parse(Deno.readTextFileSync(Deno.cwd() + "/config.json"));
-bot.on('message', (msg: Message) => {
+bot.on('message', async (msg: Message) => {
      // success!
-     console.log(msg.channel);
-     switch (msg.getCommand('?')) {
+     switch (msg.getCommand('!')) {
           case 'ping':
-               console.log(':)');
+               msg.channel.send('Pong!');
                return;
           case 'stop':
                if (msg.author.id === '281530702590246914') {
                     if (msg.args[0] === 'please') {
-                         bot.disconnect();
-                         console.log('Stopped!!!');
+                         await msg.channel.send('Stopping...');
+                         await bot.disconnect();
                          Deno.exit(0);
+                    } else {
+                         msg.channel.send('No...');
                     }
+               } else {
+                    msg.channel.send('What do you think you are doing?');
                }
                break;
           case 'channel':
-               console.log(msg.channel.name);
+               msg.channel.send(`\`\`\`js\n${JSON.stringify(msg.channel)}\n\`\`\``);
           default:
                return;
      }

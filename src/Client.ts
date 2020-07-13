@@ -8,12 +8,14 @@ import EventHandler from "./events/EventHandler.ts";
 import User from "./structures/User.ts";
 import Message from "./structures/Message.ts";
 import CacheManager from './cache/CacheManager.ts';
+import RequestManager from './rest/RequestManager.ts';
 
 class Client extends EventEmitter {
     public _user!: ClientUser;
     public _lastACK?: number;
     public _eventsHandle: EventHandler;
     public _cacheManager: CacheManager;
+    private requestManager: RequestManager;
     private wsm?: WebsocketManager;
     private heartInterval?: number;
 
@@ -22,6 +24,7 @@ class Client extends EventEmitter {
         this._eventsHandle = new EventHandler(this);
         this._eventsHandle.init();
         this._cacheManager = new CacheManager(this, {});
+        this.requestManager = new RequestManager();
     }
 
     public get users(): Map<string, User> {

@@ -1,6 +1,6 @@
 import { WebSocket as ws, connectWebSocket as cws, connectWebSocket, isWebSocketCloseEvent } from 'https://deno.land/std/ws/mod.ts';
 import Client from '../Client.ts';
-import Constants from './discord/Constants.ts';
+import Endpoints from '../rest/Endpoints.ts';
 import Payload from './discord/interfaces/Payload.ts';
 import Packet from './discord/packets/Packet.ts';
 import OPCodes from './discord/interfaces/OPCodes.ts';
@@ -23,7 +23,7 @@ class WebsocketManager {
         this._client = client;
         try {
             this._logger.debug('Connecting...');
-            this._ws = await connectWebSocket(Constants.GATEWAY);
+            this._ws = await connectWebSocket(Endpoints.GATEWAY);
             for await (const m of this._ws) {
                 try {
                     if (isWebSocketCloseEvent(m)) {

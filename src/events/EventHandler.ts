@@ -1,12 +1,12 @@
-import EventPacket from "../network/discord/packets/EventPacket.ts";
-import Payload from "../network/discord/interfaces/Payload.ts";
-import Message from "../structures/Message.ts";
-import User from "../structures/User.ts";
-import Client from "../Client.ts";
-import ClientUser from "../structures/ClientUser.ts";
-import Logger from "../utils/Logger.ts";
-import Channel from "../structures/channel/Channel.ts";
-import TextChannel from "../structures/channel/TextChannel.ts";
+import EventPacket from '../network/discord/packets/EventPacket.ts';
+import Payload from '../network/discord/interfaces/Payload.ts';
+import Message from '../structures/Message.ts';
+import User from '../structures/User.ts';
+import Client from '../Client.ts';
+import ClientUser from '../structures/ClientUser.ts';
+import Logger from '../utils/Logger.ts';
+import Channel from '../structures/channel/Channel.ts';
+import TextChannel from '../structures/channel/TextChannel.ts';
 
 class EventHandler {
     private client: Client;
@@ -36,7 +36,7 @@ class EventHandler {
      * Called when the gateway calls READY
      * @param data - Ready event
      */
-    public onReady(data: any): void {
+    public async onReady(data: any): Promise<void> {
         this.client.user = new ClientUser(data.user);
         //this.client.gateway.set('version', data.v);
         //this.client.dataManager.add('private_channels', []);

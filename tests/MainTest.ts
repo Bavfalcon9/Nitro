@@ -10,23 +10,29 @@ if (!await exists(file)) {
      Deno.exit(0);
 }
 const { token } = await JSON.parse(Deno.readTextFileSync(Deno.cwd() + "/config.json"));
+bot.on('ready', () => {
+     console.log(`Logged in: ${bot.user.tag}`)
+});
 bot.on('message', async (msg: Message) => {
      // success!
      switch (msg.getCommand('!')) {
           case 'ping':
-               msg.channel.send('Pong!');
+               let m = await msg.channel.send('Pinging');
+               let diff = m.timestamp - msg.timestamp;
+               m.edit(`Pong! \`${diff}ms\``);
+               return;
+          case 'del':
+               msg.channel.send('Deleting in 5 seconds!').then((m: Message) => {
+                    m.delete(5000);
+               });
                return;
           case 'stop':
-               if (msg.author.id === '281530702590246914') {
-                    if (msg.args[0] === 'please') {
-                         await msg.channel.send('Stopping...');
-                         await bot.disconnect();
-                         Deno.exit(0);
-                    } else {
-                         msg.channel.send('No...');
-                    }
+               if (msg.author.id === bot.application?.owner.id) {
+                    await msg.channel.send('Disconnecting client.');
+                    bot.disconnect();
+                    Deno.exit(0);
                } else {
-                    msg.channel.send('What do you think you are doing?');
+                    msg.channel.send('You are not the bot owner!');
                }
                break;
           case 'channel':

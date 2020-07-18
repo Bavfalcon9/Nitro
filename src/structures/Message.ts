@@ -2,10 +2,14 @@ import User from './User.ts'
 import Base from './Base.ts';
 import Channel from './channel/Channel.ts';
 import TextChannel from './channel/TextChannel.ts';
+import MessageContent from '../network/discord/interfaces/MessageContent.ts';
+import RequestManager from '../rest/RequestManager.ts';
+import Sleep from '../utils/Sleep.ts';
+
 class Message extends Base {
     public type: number;
     public tts: boolean;
-    public timestamp: string;
+    public timestamp: number;
     public pinned: boolean;
     public nonce: string | number;
     public mentions: any[]; // Leave as any for now
@@ -25,7 +29,7 @@ class Message extends Base {
         // To Do: Restructure.
         this.type = data.type;
         this.tts = data.tts || false;
-        this.timestamp = data.timestamp || Date.now();
+        this.timestamp = Date.parse(data.timestamp) || Date.now();
         this.pinned = data.pinned || false;
         this.nonce = data.nonce || null;
         this.mentions = data.mentions;
@@ -55,8 +59,27 @@ class Message extends Base {
      * Send a message in response into the origin channel.
      * @param msg - Message
      */
-    public async send(msg: string): Promise<void> {
-        return;
+    public async reply(msg: string): Promise<Message> {
+        return this.channel.send('<@' + this.author.id + '>, ' + msg);
+    }
+
+    /**
+     * Edit a message
+     * @param content - Content
+     */
+    public async edit(content: string|MessageContent): Promise<Message> {
+        if (typeof content === 'string') {
+            content = { content: content };
+        }
+        return RequestManager.editMessage(this.channel_id, this.id, content);
+    }
+
+    public async delete(ms: number = -1): Promise<boolean> {
+        if (ms > 0) {
+            await Sleep(ms);
+        }
+        const res: boolean = await RequestManager.deleteMessage(this.channel_id, this.id);
+        return res;
     }
 }
 export default Message;

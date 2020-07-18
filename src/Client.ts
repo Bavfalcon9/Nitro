@@ -10,8 +10,11 @@ import Message from "./structures/Message.ts";
 import CacheManager from './cache/CacheManager.ts';
 import RequestManager from './rest/RequestManager.ts';
 import { CacheOptions, DefaultOptions } from './cache/CacheOptions.ts';
+import Application from './structures/oauth2/Application.ts';
+import { ApplicationInformation } from './network/discord/interfaces/ApplicationInformation.ts';
 
 class Client extends EventEmitter {
+    public application: Application|null;
     public _user!: ClientUser;
     public _lastACK?: number;
     public _eventsHandle: EventHandler;
@@ -22,16 +25,18 @@ class Client extends EventEmitter {
 
     constructor(cacheOptions: CacheOptions = DefaultOptions) {
         super();
+        this.application = null;
         this._eventsHandle = new EventHandler(this);
         this._eventsHandle.init();
         this._cacheManager = new CacheManager(this, cacheOptions);
         this.requestManager = new RequestManager();
+        RequestManager.client = this;
     }
 
     public get users(): Map<string, User> {
         return this._cacheManager.users;
     }
-
+    
     public connect(token: string): void {
         if (this.wsm !== undefined) {
             throw new Error('Client already connected! Please terminate the existing connection.');
@@ -41,6 +46,7 @@ class Client extends EventEmitter {
         this.wsm = new WebsocketManager();
         try {
             this.wsm.init(this);
+            this.resolveApplication();
         } catch (err) {
             throw err;
         }
@@ -78,6 +84,15 @@ class Client extends EventEmitter {
     }
     get user(): ClientUser {
         return this._user
+    }
+
+    private async resolveApplication(): Promise<void> {
+        const res: ApplicationInformation|boolean = await RequestManager.getApplication();
+        if (typeof res === 'boolean') {
+            return;
+        } else {
+            this.application = new Application(res);
+        }
     }
 }
 export default Client;

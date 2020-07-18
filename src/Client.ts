@@ -9,6 +9,7 @@ import User from "./structures/User.ts";
 import Message from "./structures/Message.ts";
 import CacheManager from './cache/CacheManager.ts';
 import RequestManager from './rest/RequestManager.ts';
+import { CacheOptions, DefaultOptions } from './cache/CacheOptions.ts';
 
 class Client extends EventEmitter {
     public _user!: ClientUser;
@@ -19,11 +20,11 @@ class Client extends EventEmitter {
     private wsm?: WebsocketManager;
     private heartInterval?: number;
 
-    constructor() {
+    constructor(cacheOptions: CacheOptions = DefaultOptions) {
         super();
         this._eventsHandle = new EventHandler(this);
         this._eventsHandle.init();
-        this._cacheManager = new CacheManager(this, {});
+        this._cacheManager = new CacheManager(this, cacheOptions);
         this.requestManager = new RequestManager();
     }
 
@@ -36,7 +37,7 @@ class Client extends EventEmitter {
             throw new Error('Client already connected! Please terminate the existing connection.');
         }
 
-        ProtectedDataStore.token = token;
+        ProtectedDataStore.token = token; // redo how this is handled
         this.wsm = new WebsocketManager();
         try {
             this.wsm.init(this);

@@ -1,36 +1,68 @@
-import User from "../structures/User.ts";
-import TextChannel from "../structures/channel/TextChannel.ts";
+import CacheMap from "./CacheMap.ts";
+import Channel from "../structures/channel/Channel.ts";
 import Client from "../Client.ts";
-import Payload from "../network/discord/interfaces/Payload.ts";
 import Message from "../structures/Message.ts";
+import Payload from "../network/discord/interfaces/Payload.ts";
+import TextChannel from "../structures/channel/TextChannel.ts";
+import User from "../structures/User.ts";
+import { CacheOptions, DefaultOptions } from "./CacheOptions.ts";
 
 class CacheManager {
-     private _users: Map<string, User>;
-     private _textChannels: Map<string, TextChannel>;
+     private _channels: CacheMap<string, Channel>|null;
+     private _guilds: CacheMap<string, any>|null;
+     private _users: CacheMap<string, User>|null;
+     private _invites: CacheMap<string, any>|null;
+     private _messages: CacheMap<string, Message>|null;
+     private _opts: CacheOptions;
 
-     constructor(client: Client, opts: any) {
-          this._users = new Map();
-          this._textChannels = new Map();
+     constructor(client: Client, opts: CacheOptions) {
+          this._opts = opts;
+          if (!opts.channels) opts.channels = DefaultOptions.channels;
+          if (!opts.guilds) opts.guilds = DefaultOptions.guilds;
+          if (!opts.users) opts.users = DefaultOptions.users;
+          if (!opts.invites) opts.invites = DefaultOptions.invites;
+          if (!opts.messages) opts.messages = DefaultOptions.users;
 
-          client.on('raw', (payload: Payload) => {
-
-          })
+          if (!opts.$options || !opts.$options.use_db) {
+               this._channels = (!opts.channels?.enabled) ? null : new CacheMap(null, opts.channels.max);
+               this._guilds = (!opts.guilds?.enabled) ? null : new CacheMap(null, opts.guilds.max);
+               this._users = (!opts.users?.enabled) ? null : new CacheMap(null, opts.users.max);
+               this._invites = (!opts.invites?.enabled) ? null : new CacheMap(null, opts.invites.max);
+               this._messages = (!opts.messages?.enabled) ? null : new CacheMap(null, opts.messages.max);
+          } else {
+               throw 'Database API still WIP';
+          }
      }
 
-     public get users() {
-          return this._users;
+     public get channels(): CacheMap<any, any> {
+          return this._channels || new CacheMap();
      }
 
-     public get textChannels() {
-          return this._textChannels;
+     public get guilds(): CacheMap<any, any> {
+          return this._guilds || new CacheMap();
      }
 
-     public add(type: TextChannel|User|Message): void {
-          if (type instanceof TextChannel) {
-               this.textChannels.set(type.id, type);
+     public get users(): CacheMap<any, any> {
+          return this._users || new CacheMap();
+     }
+
+     public get invites(): CacheMap<any, any> {
+          return this._invites || new CacheMap();
+     }
+
+     public get messages(): CacheMap<any, any> {
+          return this._messages || new CacheMap();
+     }
+
+     public add(type: Channel|User|Message): void {
+          if (type instanceof Channel) {
+               this.channels.set(type.id, type);
           }
           if (type instanceof User) {
                this.users.set(type.id, type);
+          }
+          if (type instanceof Message) {
+               this.messages.set(type.id, type);
           }
      }
 }

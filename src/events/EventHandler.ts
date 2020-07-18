@@ -49,7 +49,7 @@ class EventHandler {
      * Called when the gateway calls MESSAGE
      */
     public onMessageCreate(data: any): void {
-        const message = new Message(data, this.client._cacheManager.textChannels.get(data.channel_id));
+        const message = new Message(data, this.client._cacheManager.channels.get(data.channel_id));
         this.client.emit('message', message);
     }
 

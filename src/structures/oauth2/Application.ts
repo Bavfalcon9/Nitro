@@ -27,11 +27,11 @@ class Application extends Base {
         this.owner = new User(data.owner);
         this.summary = data.summary;
         this.verify_key = data.verify_key;
-        this.team = data.team;
-        this.guild_id = data.guild_id;
-        this.primary_sku_id = data.primary_sku_id;
-        this.slug = data.slug;
-        this.cover_image = data.cover_image;
+        this.team = data.team || false;
+        this.guild_id = data.guild_id || false;
+        this.primary_sku_id = data.primary_sku_id || false;
+        this.slug = data.slug || false;
+        this.cover_image = data.cover_image || false;
     }
 }
 export default Application;

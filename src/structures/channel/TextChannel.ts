@@ -2,6 +2,7 @@ import Channel from "./Channel.ts";
 import MessageContent from "../../network/discord/interfaces/MessageContent.ts";
 import RequestManager from "../../rest/RequestManager.ts";
 import Message from "../Message.ts";
+import SimpleEmbed from "../../utils/discord/SimpleEmbed.ts";
 
 class TextChannel extends Channel {
      public guildId: string;
@@ -21,7 +22,7 @@ class TextChannel extends Channel {
           this.position = data.position;
           this.permissionOverwrites = data.permission_overwrites;
           this.rateLimit = data.rate_limit_per_user;;
-          this.nsfw = data.nsfw;
+          this.nsfw = data.nsfw || false;
           this.topic = data.topic;
           this.lastMessageId = data.last_message_id;
           this.parentId = data.parent_id;
@@ -42,7 +43,7 @@ class TextChannel extends Channel {
           });
      }
 
-     public send(content: string|MessageContent): Promise<Message> {
+     public send(content: string|MessageContent|SimpleEmbed): Promise<Message> {
           if (typeof content === 'string') {
                content = { content: content };
           }

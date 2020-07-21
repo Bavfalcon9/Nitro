@@ -1,7 +1,9 @@
 import Client from '../src/Client.ts';
 import { exists } from 'https://deno.land/std/fs/exists.ts';
 import Message from '../src/structures/Message.ts';
-import Logger from '../src/utils/Logger.ts';
+import Logger from '../src/utils/misc/Logger.ts';
+import ClearColor from '../src/utils/misc/ClearColor.ts';
+import SimpleEmbed from '../src/utils/discord/SimpleEmbed.ts';
 const file: string = Deno.cwd() + '/config.json';
 const bot: Client = new Client();
 Logger.DEBUG_ENABLED = true;
@@ -37,6 +39,39 @@ bot.on('message', async (msg: Message) => {
                break;
           case 'channel':
                msg.channel.send(`\`\`\`js\n${JSON.stringify(msg.channel)}\n\`\`\``);
+          case 'ce':
+               if (!msg.args[0]) {
+                    msg.channel.send('Sorry, please provide a color!');
+                    return;
+               } else {
+                    let em = new SimpleEmbed();
+                    em.setColor(msg.args[0]);
+                    em.setTitle(msg.args[1] || '');
+                    em.setDescription(msg.args[2] || '');
+                    msg.channel.send(em);
+                    break;
+               }
+          case 'eval':
+               if (msg.author.id !== bot.application?.owner.id) {
+                    msg.channel.send('You are not the bot owner!');
+                    return;
+               }
+               try {
+                    let code = msg.args.join(" ");
+                    if (code.search('await') != -1) {
+                         code = 'return (async () => { try {' + code + '} catch (e) {return;}})()';
+                    }
+                    let evaled = eval(code);
+                    evaled = ClearColor(Deno.inspect(evaled, {
+                         depth: 2
+                    }));
+                    if (evaled.length >= 2000) {
+                         evaled = evaled.split("").slice(0, 1971).join("") + '\nMessage shortened';
+                    }
+                    msg.channel.send(`\`\`\`js\n${evaled}\`\`\``);
+               } catch (err) {
+                    msg.channel.send(`\`\`\`js\n${err}\n\`\`\``);
+               }
           default:
                return;
      }

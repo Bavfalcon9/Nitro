@@ -7,7 +7,7 @@ import OPCodes from './discord/interfaces/OPCodes.ts';
 import HeartBeatPacket from './discord/packets/HeartBeatPacket.ts';
 import LoginPacket from './discord/packets/LoginPacket.ts';
 import ProtectedDataStore from '../stores/ProtectedDataStore.ts';
-import Logger from '../utils/Logger.ts';
+import Logger from '../utils/misc/Logger.ts';
 import EventPacket from './discord/packets/EventPacket.ts';
 
 class WebsocketManager {

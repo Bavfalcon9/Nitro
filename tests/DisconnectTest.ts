@@ -1,5 +1,5 @@
 import Client from '../src/Client.ts';
-import Logger from '../src/utils/Logger.ts';
+import Logger from '../src/utils/misc/Logger.ts';
 const { token } = await JSON.parse(Deno.readTextFileSync(Deno.cwd() + "/config.json"));
 const bot: Client = new Client();
 Logger.DEBUG_ENABLED = true;

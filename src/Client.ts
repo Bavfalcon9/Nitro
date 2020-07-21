@@ -15,7 +15,7 @@ import { ApplicationInformation } from './network/discord/interfaces/Application
 
 class Client extends EventEmitter {
     public application: Application|null;
-    public _user!: ClientUser;
+    public user!: ClientUser;
     public _lastACK?: number;
     public _eventsHandle: EventHandler;
     public _cacheManager: CacheManager;
@@ -29,8 +29,7 @@ class Client extends EventEmitter {
         this._eventsHandle = new EventHandler(this);
         this._eventsHandle.init();
         this._cacheManager = new CacheManager(this, cacheOptions);
-        this.requestManager = new RequestManager();
-        RequestManager.client = this;
+        this.requestManager = new RequestManager(this);
     }
 
     public get users(): Map<string, User> {
@@ -71,19 +70,11 @@ class Client extends EventEmitter {
         this.wsm = undefined;
         clearInterval(this.heartInterval);
         this.heartInterval = undefined;
-        // to do: options
+        // to do: options [reconnect?]
     }
 
     public async sendPacket(pk: Packet): Promise<void> {
         return await this.wsm?.send(pk.parsePacket());
-    }
-
-
-    set user(user: ClientUser) {
-        this._user = user;
-    }
-    get user(): ClientUser {
-        return this._user
     }
 
     private async resolveApplication(): Promise<void> {

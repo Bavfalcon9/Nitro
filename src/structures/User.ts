@@ -8,7 +8,7 @@ class User extends Base {
 
     constructor(data: any) {
         super(data.id);
-        this.bot = data.bot;
+        this.bot = data.bot || false;
         this.username = data.username;
         this.discriminator = data.discriminator;
         this.avatar = data.avatar;
@@ -17,7 +17,6 @@ class User extends Base {
     public get tag(): string {
         return this.username + '#' + this.discriminator;
     }
-    
     // to do, more functions
 }
 

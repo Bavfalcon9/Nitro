@@ -4,7 +4,7 @@ import Message from '../structures/Message.ts';
 import User from '../structures/User.ts';
 import Client from '../Client.ts';
 import ClientUser from '../structures/ClientUser.ts';
-import Logger from '../utils/Logger.ts';
+import Logger from '../utils/misc/Logger.ts';
 import Channel from '../structures/channel/Channel.ts';
 import TextChannel from '../structures/channel/TextChannel.ts';
 
@@ -21,6 +21,10 @@ class EventHandler {
         
     }
 
+    /**
+     * Handles events from gateway.
+     * @param pk - Packet from gateway
+     */
     public handleEvent(pk: EventPacket): void {
         new Logger().debug('Packet prehandle: ' + pk.event);
         const name: string = pk.event;
@@ -50,21 +54,34 @@ class EventHandler {
      */
     public onMessageCreate(data: any): void {
         const message = new Message(data, this.client._cacheManager.channels.get(data.channel_id));
+        this.client._cacheManager.add(message);
         this.client.emit('message', message);
     }
 
     public onChannelCreate(data: any): void {
-        switch (Channel.getTypeString(data.type)) {
-            case 'text':
-                this.client._cacheManager.add(new TextChannel(data));
+        let channel: Channel;
+        let type: string = Channel.getTypeString(data.type);
+        if(type === 'text') {
+            channel = new TextChannel(data);
+            this.client._cacheManager.add(channel);
+        } else {
+            channel = new Channel(data.id);
         }
+
+        this.client.emit('channelCreate', channel);
     }
 
     public onChanneUpdate(data: any): void {
-        switch (Channel.getTypeString(data.type)) {
-            case 'text':
-                this.client._cacheManager.add(new TextChannel(data));
+        let channel: Channel;
+        let type: string = Channel.getTypeString(data.type);
+        if(type === 'text') {
+            channel = new TextChannel(data);
+            this.client._cacheManager.add(channel);
+        } else {
+            channel = new Channel(data.id);
         }
+        
+        this.client.emit('channelUpdate', channel);
     }
 
     public onGuildCreate(data: any): void {

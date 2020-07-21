@@ -4,7 +4,7 @@ import Channel from './channel/Channel.ts';
 import TextChannel from './channel/TextChannel.ts';
 import MessageContent from '../network/discord/interfaces/MessageContent.ts';
 import RequestManager from '../rest/RequestManager.ts';
-import Sleep from '../utils/Sleep.ts';
+import Sleep from '../utils/misc/Sleep.ts';
 
 class Message extends Base {
     public type: number;

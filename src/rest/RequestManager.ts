@@ -4,17 +4,16 @@ import MessageContent from '../network/discord/interfaces/MessageContent.ts';
 import Message from '../structures/Message.ts';
 import Client from '../Client.ts';
 import { ApplicationInformation } from '../network/discord/interfaces/ApplicationInformation.ts';
+import SimpleEmbed from '../utils/discord/SimpleEmbed.ts';
 
-/**
- * This needs redoing, I'm still planning on how I want to go about it though. So be patient please <3
- */
 class RequestManager {
-     public static client: Client;
-     private _queue: Set<any>;
-     private _ticker?: number;
+     private static client: Client;
 
-     constructor() {
-          this._queue = new Set();
+     constructor(client: Client) {
+          RequestManager.client = client;
+          // to do: Queue system (respect discord rate limits)
+          // to do: Handle errors correctly, pass through promise.
+          // to do: Never
      }
 
      /**
@@ -50,7 +49,12 @@ class RequestManager {
           });
      }
 
-     public static async sendMessage(chanid: string, content: MessageContent): Promise<Message> {
+     /**
+      * Send a message, return a promise.
+      * @param chanid - Channel Id
+      * @param content - Content
+      */
+     public static async sendMessage(chanid: string, content: MessageContent|SimpleEmbed): Promise<Message> {
           const response = await RequestManager.request(Endpoints.REST_BASE_URL + Endpoints.CHANNEL_MESSAGES(chanid), {
                body: JSON.stringify(content),
                method: 'POST'
@@ -62,6 +66,12 @@ class RequestManager {
           }
      }
 
+     /**
+      * Edit a message
+      * @param chanid - Channel Id
+      * @param mid - Message Id
+      * @param content - New content
+      */
      public static async editMessage(chanid: string, mid: string, content: MessageContent): Promise<Message> {
           const response = await RequestManager.request(Endpoints.REST_BASE_URL + Endpoints.CHANNEL_MESSAGES(chanid, mid), {
                body: JSON.stringify(content),
@@ -74,6 +84,11 @@ class RequestManager {
           }
      }
 
+     /**
+      * Deletes a message
+      * @param chanid - Channel Id
+      * @param mid - Message Id
+      */
      public static async deleteMessage(chanid: string, mid: string): Promise<boolean> {
           const response = await RequestManager.request(Endpoints.REST_BASE_URL + Endpoints.CHANNEL_MESSAGES(chanid, mid), {
                method: 'DELETE'
@@ -85,6 +100,9 @@ class RequestManager {
           }
      }
 
+     /**
+      * Get the application for the bot.
+      */
      public static async getApplication(): Promise<boolean|ApplicationInformation> {
           const response = await RequestManager.request(Endpoints.get(Endpoints.OAUTH2_APPLICATION), {
                method: 'GET'

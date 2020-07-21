@@ -12,5 +12,5 @@ config.json
 tests/AssistantAntiRaid.ts
 
 # Resources
-r/*
+res/*
 resources/*

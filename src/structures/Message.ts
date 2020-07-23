@@ -37,7 +37,7 @@ class Message extends Base {
         this.embeds = data.embeds;
         this.content = data.content;
         this.channel_id = data.channel_id;
-        this.channel = channel || new TextChannel(TextChannel.dummyObject);
+        this.channel = channel || this.genDummyChannel();
         this.author = new User(data.author);
         this.attachments = data.attachments;
         this.args = [];
@@ -80,6 +80,12 @@ class Message extends Base {
         }
         const res: boolean = await RequestManager.deleteMessage(this.channel_id, this.id);
         return res;
+    }
+
+    private genDummyChannel(): TextChannel {
+        const DummyObj= TextChannel.dummyObject();
+        DummyObj.id = this.channel_id;
+        return new TextChannel(DummyObj);
     }
 }
 export default Message;

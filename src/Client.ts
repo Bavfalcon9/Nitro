@@ -27,7 +27,6 @@ class Client extends EventEmitter {
         super();
         this.application = null;
         this._eventsHandle = new EventHandler(this);
-        this._eventsHandle.init();
         this._cacheManager = new CacheManager(this, cacheOptions);
         this.requestManager = new RequestManager(this);
     }

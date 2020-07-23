@@ -7,18 +7,12 @@ import ClientUser from '../structures/ClientUser.ts';
 import Logger from '../utils/misc/Logger.ts';
 import Channel from '../structures/channel/Channel.ts';
 import TextChannel from '../structures/channel/TextChannel.ts';
+import Guild from '../structures/Guild.ts';
 
 class EventHandler {
     private client: Client;
     constructor(client: Client) {
         this.client = client;
-    }
-
-    /**
-     * initializes the event handler
-     */
-    public init() {
-        
     }
 
     /**
@@ -32,8 +26,9 @@ class EventHandler {
         if ((this as any)[funcName] !== undefined) {
             (this as any)[funcName](pk.data);
             return;
-        } 
-
+        } else {
+            this.client.emit('raw' + funcName.replace('on', ''), pk.data);
+        }
     }
 
     /**
@@ -53,7 +48,14 @@ class EventHandler {
      * Called when the gateway calls MESSAGE
      */
     public onMessageCreate(data: any): void {
-        const message = new Message(data, this.client._cacheManager.channels.get(data.channel_id));
+        const channel = this.client._cacheManager.channels.get(data.channel_id);
+        let message: Message;
+
+        if (channel) {
+            channel.guild = this.client._cacheManager.guilds.get(channel.guildId);
+        }
+
+        message = new Message(data, channel);
         this.client._cacheManager.add(message);
         this.client.emit('message', message);
     }
@@ -79,20 +81,27 @@ class EventHandler {
             this.client._cacheManager.add(channel);
         } else {
             channel = new Channel(data.id);
+            this.client._cacheManager.add(channel);
         }
         
         this.client.emit('channelUpdate', channel);
     }
 
     public onGuildCreate(data: any): void {
+        let guild: Guild = new Guild(data);
+        this.client._cacheManager.add(guild);
+        // todo: members.
         data.channels.forEach((c: any) => {
             c.guild_id = data.id;
-            this.onChanneUpdate(c)
+            this.onChanneUpdate(c); // this really shouldn't be here.
         });
+        this.client.emit('guildCreate', guild);
     }
 
     public onGuildUpdate(data: any): void {
         data.channels.forEach((c: any) => this.onChanneUpdate(c));
+        this.client.emit('')
+        // to do update cache
     }
 }
 export default EventHandler;

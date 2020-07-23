@@ -1,4 +1,4 @@
-param ($file='./tests/MainTest.ts')
+param ($file='./tests/Main.ts')
 Function CheckDeno {
     try {
         if (Get-Command deno.exe) {

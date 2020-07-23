@@ -4,6 +4,7 @@ Nitro is a Deno wrapper for the discord api.
 
 #### Features:
 - Fast and extensible
+- Performant
 - No dependencies
 - Object Oriented
 - Made in typescript :heart: 
@@ -26,8 +27,10 @@ client.on('message', (message: Nitro.Message) => {
     }
 });
 ```
+If you still want something to look at, I've left some tests for the framework in [this folder](/tests/).
 
 ## API
+This will be moving to the docs folder soon.
 
 ### Caching
 Nitro comes with a bunch of built in API functionality to ease your experience; However since Nitro is designed for speed. Due to this, Nitro does not cache any gateway events by default. Meaning if you wish to cache users, guilds, and channels, you need to tell Nitro you wish to do so.
@@ -53,7 +56,6 @@ const token = 'NzI4ODA4NjE1NTM1NzA2MTYz.Xv_x-g.In0Tla4SCEcDYkOm8ZcDBtWBG8I';
 const client: Nitro.Client = new Nitro.Client({
     caching: {
         users: {
-            set_direct: true, // sets the property directly on the client. IE client.users instead of client.cache.users
             enabled: true,
             max: 50,
             refresh: true

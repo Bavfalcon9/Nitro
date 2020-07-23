@@ -6,6 +6,7 @@ import Payload from "../network/discord/interfaces/Payload.ts";
 import TextChannel from "../structures/channel/TextChannel.ts";
 import User from "../structures/User.ts";
 import { CacheOptions, DefaultOptions } from "./CacheOptions.ts";
+import Guild from "../structures/Guild.ts";
 
 class CacheManager {
      private _channels: CacheMap<string, Channel>|null;
@@ -54,17 +55,10 @@ class CacheManager {
           return this._messages || new CacheMap();
      }
 
-     public add(type: Channel|User|Message): void {
-          if (type instanceof Channel) {
-               this.channels.set(type.id, type);
-          }
-          if (type instanceof User) {
-               this.users.set(type.id, type);
-          }
-          if (type instanceof Message) {
-               this.messages.set(type.id, type);
-          }
+     public add(type: Channel|User|Message|Guild): void {
+          const typeCache: string = type.constructor.name.toLowerCase().replace(/(text|voice)/ig, '') + 's';
+          (this as any)[typeCache]?.set(type.id, type);
+          // easy hack lol
      }
 }
-
 export default CacheManager;

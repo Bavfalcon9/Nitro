@@ -1,17 +1,11 @@
 import Client from '../src/Client.ts';
-import { exists } from 'https://deno.land/std/fs/exists.ts';
 import Message from '../src/structures/Message.ts';
 import Logger from '../src/utils/misc/Logger.ts';
 import ClearColor from '../src/utils/misc/ClearColor.ts';
 import SimpleEmbed from '../src/utils/discord/SimpleEmbed.ts';
-const file: string = Deno.cwd() + '/config.json';
+import { readJson } from "https://deno.land/std/fs/mod.ts";
 const bot: Client = new Client();
-Logger.DEBUG_ENABLED = true;
-if (!await exists(file)) {
-     console.error('Config file could not be found.');
-     Deno.exit(0);
-}
-const { token } = await JSON.parse(Deno.readTextFileSync(Deno.cwd() + "/config.json"));
+const { token }: any = await readJson(Deno.cwd() + "/config.json");
 bot.on('ready', () => {
      console.log(`Logged in: ${bot.user.tag}`)
 });

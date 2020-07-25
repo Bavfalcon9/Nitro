@@ -12,9 +12,9 @@ Function CheckDeno {
 }
 if (CheckDeno) {
     Write-Host "Executing script with deno" -ForegroundColor Yellow
-    deno.exe run -A $file
+    deno.exe run --unstable -A $file
 } else {
     Invoke-WebRequest https://deno.land/x/install/install.ps1 -useb | Invoke-Expression
     Write-Host "Deno installed! Running project now!" -ForegroundColor Green
-    deno.exe run -A $file
+    deno.exe run --unstable -A $file
 }

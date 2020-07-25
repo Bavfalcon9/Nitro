@@ -8,8 +8,8 @@ node_modules/*
 # Configs
 config.json
 
-# Special tests
-tests/AssistantAntiRaid.ts
+# Tests
+oldTests/*
 
 # Resources
 res/*

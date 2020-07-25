@@ -27,8 +27,7 @@ class WebsocketManager {
             for await (const m of this._ws) {
                 try {
                     if (isWebSocketCloseEvent(m)) {
-                        // to do handle bad connections properly
-                        throw m.code;
+                        throw (m.reason || m.code);
                     }
                     const payload: Payload = JSON.parse(m.toString());
                     this._client.emit('raw', payload);

@@ -7,7 +7,7 @@ import ClientUser from '../structures/ClientUser.ts';
 import Logger from '../utils/misc/Logger.ts';
 import Channel from '../structures/channel/Channel.ts';
 import TextChannel from '../structures/channel/TextChannel.ts';
-import Guild from '../structures/Guild.ts';
+import Guild from '../structures/guild/Guild.ts';
 
 class EventHandler {
     private client: Client;

@@ -1,7 +1,7 @@
-import Base from './Base.ts';
-import User from './User.ts';
-import Channel from './channel/Channel.ts';
-import { Region } from '../network/discord/interfaces/Region.ts';
+import Base from '../Base.ts';
+import User from '../User.ts';
+import Channel from '../channel/Channel.ts';
+import { Region } from '../../network/discord/interfaces/Region.ts';
 
 class Guild extends Base {
     public name: string;

@@ -6,7 +6,7 @@ import Payload from "../network/discord/interfaces/Payload.ts";
 import TextChannel from "../structures/channel/TextChannel.ts";
 import User from "../structures/User.ts";
 import { CacheOptions, DefaultOptions } from "./CacheOptions.ts";
-import Guild from "../structures/Guild.ts";
+import Guild from "../structures/guild/Guild.ts";
 
 class CacheManager {
      private _channels: CacheMap<string, Channel>|null;

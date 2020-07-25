@@ -1,7 +1,7 @@
-import Base from './Base.ts';
+import Base from '../Base.ts';
 import Guild from './Guild.ts';
-import Channel from './channel/Channel.ts';
-import User from './User.ts';
+import Channel from '../channel/Channel.ts';
+import User from '../User.ts';
 
 class Invite extends Base {
     public code: string;

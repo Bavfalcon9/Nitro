@@ -1,7 +1,7 @@
 # Nitro - A fast framework built for the DiscordAPI
 Nitro is a Deno wrapper for the discord api.
 
-[Support Discord](https://discord.gg/f6jDMrt)
+[Support Discord](https://discord.gg/DqHuW8k)
 <br />
 
 #### Features:

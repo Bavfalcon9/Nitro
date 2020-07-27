@@ -13,6 +13,5 @@ jobs:
         with:
           deno-version: v1.x
       - run: |
-          deno --version
           deno run https://raw.githubusercontent.com/Bavfalcon9/Nitro/master/examples/Basic.ts
 #          deno run https://github.com/Bavfalcon9/Nitro/blob/master/tests/NitroProficiencyTest.ts

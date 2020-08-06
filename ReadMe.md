@@ -1,5 +1,5 @@
 # Nitro - A fast framework built for the DiscordAPI
-Nitro is a Deno wrapper for the discord api.
+Nitro is a Deno wrapper for the discord api designed for performance, and hastely development.
 <br />
 [![Discord](https://discordapp.com/api/guilds/732017159278034995/embed.png)](https://discord.gg/DqHuW8k)
 ![Nitro CI](https://github.com/Bavfalcon9/Nitro/workflows/Nitro%20CI/badge.svg)
@@ -9,6 +9,8 @@ Nitro is a Deno wrapper for the discord api.
 - Performant
 - No dependencies
 - Object Oriented
+- Controlled Caching
+- Native or old Event types.
 - Made in typescript :heart: 
 ## Getting started
 For those who want to get something up, heres a little example on how to use the framework.

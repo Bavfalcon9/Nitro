@@ -8,8 +8,8 @@ node_modules/*
 # Configs
 config.json
 
-# Tests
-oldTests/*
+# Private Tests
+tests/-*
 
 # Resources
 res/*

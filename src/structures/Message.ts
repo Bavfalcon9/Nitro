@@ -5,6 +5,7 @@ import TextChannel from './channel/TextChannel.ts';
 import MessageContent from '../network/discord/interfaces/MessageContent.ts';
 import RequestManager from '../rest/RequestManager.ts';
 import Sleep from '../utils/misc/Sleep.ts';
+import Guild from '../structures/guild/Guild.ts';
 
 class Message extends Base {
     public type: number;
@@ -16,6 +17,8 @@ class Message extends Base {
     public flags: 0;
     public embeds: any[]; // Leave as any for now
     public edited_timestamp: any;
+    public guild_id: string;
+    public guild: Guild;
     public content: string;
     public channel_id: string;
     public channel: TextChannel;
@@ -23,7 +26,7 @@ class Message extends Base {
     public attachments: any[]; // Leave as any for now
     public args: string[];
 
-    constructor(data: any, channel?: TextChannel) {
+    constructor(data: any, channel?: TextChannel, guild?: Guild) {
         super(data.id);
         // probably should add something that autoconstrcuts payloads based on data.
         // To Do: Restructure.
@@ -35,6 +38,8 @@ class Message extends Base {
         this.mentions = data.mentions;
         this.flags = data.flags;
         this.embeds = data.embeds;
+        this.guild_id = data.guild_id
+        this.guild = guild || this.genDummyGuild();
         this.content = data.content;
         this.channel_id = data.channel_id;
         this.channel = channel || this.genDummyChannel();
@@ -83,9 +88,15 @@ class Message extends Base {
     }
 
     private genDummyChannel(): TextChannel {
-        const DummyObj= TextChannel.dummyObject();
+        const DummyObj = TextChannel.dummyObject();
         DummyObj.id = this.channel_id;
         return new TextChannel(DummyObj);
+    }
+
+    private genDummyGuild(): Guild {
+        const DummyObj = Guild.dummyObject();
+        DummyObj.id = this.guild_id
+        return new Guild(DummyObj);
     }
 }
 export default Message;

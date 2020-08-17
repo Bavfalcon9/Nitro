@@ -2,13 +2,19 @@ import Base from '../Base.ts';
 import User from '../User.ts';
 import Channel from '../channel/Channel.ts';
 import { Region } from '../../network/discord/interfaces/Region.ts';
+import GuildMember from './GuildMember.ts';
+import Emoji from './Emoji.ts';
+import GuildChannel from '../channel/GuildChannel.ts';
+import Role from './Role.ts';
+import RequestManager from '../../rest/RequestManager.ts';
 
 class Guild extends Base {
     public name: string;
     public icon?: string;
     public description?: string;
     public splash?: string;
-    public owner: User;
+    public owner: GuildMember | undefined;
+    public ownerID: string;
     public permissions: any; // to do
     public region: Region;
     public afkChannel: Channel;
@@ -18,8 +24,8 @@ class Guild extends Base {
     public verificationLevel: number;
     public defaultNotifications: number;
     public explicitContent: number;
-    public roles: any; //Role[];
-    public emojis: any;//Emoji[];
+    public roles: Role[];
+    public emojis?: Emoji[];
     public features: any;//GuildFeature[];
     public mfaLevel: number;
     public applicationId?: string;
@@ -31,8 +37,8 @@ class Guild extends Base {
     public unavailable: boolean;
     public memberCount?: number;
     public voiceStates?: any;
-    public members?: any;//Member[];
-    public channels?: any;//Channels[];
+    public members?: GuildMember[];
+    public channels: GuildChannel[]; //Channels[];
     public maxPresences?: number;
     public maxMembers?: number;
     public vanityUrl?: string;
@@ -47,7 +53,8 @@ class Guild extends Base {
         this.icon = data.icon;
         this.description = data.description;
         this.splash = data.splash;
-        this.owner = data.owner; // rewrite in socket events or handle
+        this.ownerID = data.owner_id
+        this.owner = this.members?.find(m => m.id === this.ownerID) || undefined; // rewrite in socket events or handle
         this.permissions = data.permissions;
         this.region = data.region;
         this.afkChannel = data.afk_channel_id;
@@ -58,7 +65,7 @@ class Guild extends Base {
         this.defaultNotifications = data.default_message_notifications;
         this.explicitContent = data.explicit_content_filter;
         this.roles = data.roles;
-        this.emojis = data.emojis;
+        this.emojis = data.emojis?.map((e: any) => new Emoji(e)) || [];
         this.features = data.features;
         this.mfaLevel = data.mfa_level;
         this.applicationId = data.application_id;
@@ -70,16 +77,61 @@ class Guild extends Base {
         this.unavailable = data.unavailable || false;
         this.memberCount = data.member_count || -1;
         this.voiceStates = data.voiceStates || [];
-        this.members = data.members || [];
-        this.channels = data.channels;
+        this.members = data.members?.map((m: any) => new GuildMember(m, this)) || [];
+        this.channels = data.channels?.map((c: any) => new GuildChannel(c)) || [];
         this.preferredLocale = data.preferred_locale;
         this.premiumTier = data.premium_tier;
         this.subscriptionCount = data.premium_subscription_count || 0;
-        // annnnnddddd i dont wanna do this right now :(
+        
     }
 
-    public get paritial(): boolean {
-        return false;
+    public static dummyObject(): Guild {
+        return new Guild({
+             id: '0',
+             name: '0',
+             description: '0',
+             splash: '0',
+             owner: null,
+             permissions: null,
+             region: '0',
+             afkChannel: null,
+             afkTimeout: null,
+        });
+   }
+
+    public get paritial(): boolean { return false }
+
+    /**
+     * Channel Methods
+     */
+    public getTextChannels(): GuildChannel[] { return this.channels.filter((c: GuildChannel) => c.type === 0) }
+    public getVoiceChannels(): GuildChannel[] { return this.channels.filter((c: GuildChannel) => c.type === 2) }
+    public getCategoryChannels(): GuildChannel[] { return this.channels.filter((c: GuildChannel) => c.type === 4) }
+
+    /**
+     * Role Methods
+     */
+    
+    public async getRole(roleID: string): Promise<null | Role> {
+        return this.roles.find(r => r.id === roleID) || null
     }
+
+    public async getAdminRoles(): Promise<Role[]> {
+        return this.roles.filter(r => r.permissions === 104320577) as Role[];
+    }
+
+    public async getModRoles(): Promise<Role[]> {
+        return this.roles.filter(r => r.permissions === 49675847) as Role[];
+    }
+
+    /**
+     * Guild Action Methods
+     */
+
+    public async banMember(mid: string, deleteMessagesDays?: 1 | 2 | 3 | 4 | 5 | 6 | 7, reason?: string): Promise<void> { 
+        await RequestManager.banMember(this.id, mid, deleteMessagesDays, reason)
+    }
+
+    public async kickMember(mid: string): Promise<void> { await RequestManager.kickMember(this.id, mid) }
 }
 export default Guild;

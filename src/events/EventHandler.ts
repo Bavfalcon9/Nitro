@@ -49,13 +49,12 @@ class EventHandler {
      */
     public onMessageCreate(data: any): void {
         const channel = this.client._cacheManager.channels.get(data.channel_id);
+        const guild = this.client._cacheManager.guilds.get(data.guild_id);
         let message: Message;
 
-        if (channel) {
-            channel.guild = this.client._cacheManager.guilds.get(channel.guildId);
-        }
+        if (channel) { channel.guild = this.client._cacheManager.guilds.get(channel.guildId) }
 
-        message = new Message(data, channel);
+        message = new Message(data, channel, guild);
         this.client._cacheManager.add(message);
         this.client.emit('message', message);
     }

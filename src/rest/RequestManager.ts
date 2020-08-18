@@ -140,7 +140,7 @@ class RequestManager {
           }
      }
 
-     public static async banMember(gid: string, mid: string, deleteMessagesDays?: 1 | 2 | 3 | 4 | 5 | 6 | 7, reason?: string): Promise<string | void> {
+     public static async banMember(gid: string, mid: string, deleteMessagesDays?: 1|2|3|4|5|6|7, reason?: string): Promise<string | void> {
           const response = await RequestManager.request(Endpoints.REST_BASE_URL + Endpoints.CREATE_BAN(gid, mid), {
                method: 'PUT',
                body: JSON.stringify({
@@ -155,7 +155,7 @@ class RequestManager {
           }
      }
 
-     public static async kickMember(gid: string, mid: string): Promise<string | void> {
+     public static async kickMember(gid: string, mid: string, reason?: string): Promise<string | void> {
           const response = await RequestManager.request(Endpoints.REST_BASE_URL + Endpoints.CREATE_KICK(gid, mid), {
                method: 'DELETE'
           });

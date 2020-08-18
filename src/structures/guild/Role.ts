@@ -8,7 +8,7 @@ class Role extends Base {
     public mentionable: boolean;
 
     constructor(data: any) {
-        super(data.id)
+        super(data.id);
         this.name = data.name;
         this.permissions = data.permissions;
         this.color = data.color;

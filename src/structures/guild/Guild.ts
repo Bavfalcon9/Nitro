@@ -4,7 +4,7 @@ import Channel from '../channel/Channel.ts';
 import { Region } from '../../network/discord/interfaces/Region.ts';
 import GuildMember from './GuildMember.ts';
 import Emoji from './Emoji.ts';
-import GuildChannel from '../channel/GuildChannel.ts';
+//import GuildChannel from '../channel/GuildChannel.ts';
 import Role from './Role.ts';
 import RequestManager from '../../rest/RequestManager.ts';
 
@@ -38,7 +38,7 @@ class Guild extends Base {
     public memberCount?: number;
     public voiceStates?: any;
     public members?: GuildMember[];
-    public channels: GuildChannel[]; //Channels[];
+    public channels: Channel[]; //Channels[];
     public maxPresences?: number;
     public maxMembers?: number;
     public vanityUrl?: string;
@@ -78,11 +78,10 @@ class Guild extends Base {
         this.memberCount = data.member_count || -1;
         this.voiceStates = data.voiceStates || [];
         this.members = data.members?.map((m: any) => new GuildMember(m, this)) || [];
-        this.channels = data.channels?.map((c: any) => new GuildChannel(c)) || [];
+        this.channels = data.channels?.map((c: any) => new Channel(c)) || [];
         this.preferredLocale = data.preferred_locale;
         this.premiumTier = data.premium_tier;
-        this.subscriptionCount = data.premium_subscription_count || 0;
-        
+        this.subscriptionCount = data.premium_subscription_count || 0;   
     }
 
     public static dummyObject(): Guild {
@@ -102,36 +101,12 @@ class Guild extends Base {
     public get paritial(): boolean { return false }
 
     /**
-     * Channel Methods
-     */
-    public getTextChannels(): GuildChannel[] { return this.channels.filter((c: GuildChannel) => c.type === 0) }
-    public getVoiceChannels(): GuildChannel[] { return this.channels.filter((c: GuildChannel) => c.type === 2) }
-    public getCategoryChannels(): GuildChannel[] { return this.channels.filter((c: GuildChannel) => c.type === 4) }
-
-    /**
-     * Role Methods
-     */
-    
-    public async getRole(roleID: string): Promise<null | Role> {
-        return this.roles.find(r => r.id === roleID) || null
-    }
-
-    public async getAdminRoles(): Promise<Role[]> {
-        return this.roles.filter(r => r.permissions === 104320577) as Role[];
-    }
-
-    public async getModRoles(): Promise<Role[]> {
-        return this.roles.filter(r => r.permissions === 49675847) as Role[];
-    }
-
-    /**
      * Guild Action Methods
      */
-
-    public async banMember(mid: string, deleteMessagesDays?: 1 | 2 | 3 | 4 | 5 | 6 | 7, reason?: string): Promise<void> { 
+    public async ban(mid: string, deleteMessagesDays?: 1 | 2 | 3 | 4 | 5 | 6 | 7, reason?: string): Promise<void> { 
         await RequestManager.banMember(this.id, mid, deleteMessagesDays, reason)
     }
 
-    public async kickMember(mid: string): Promise<void> { await RequestManager.kickMember(this.id, mid) }
+    public async kick(mid: string, reason?: string): Promise<void> { await RequestManager.kickMember(this.id, mid, reason) }
 }
 export default Guild;

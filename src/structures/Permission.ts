@@ -6,7 +6,7 @@ class Permission extends Base {
     public deny: number;
     public _json: object = {};
     constructor(allow: number, deny: number = 0) {
-        super('')
+        super('');
         this.allow = allow;
         this.deny = deny;
     }

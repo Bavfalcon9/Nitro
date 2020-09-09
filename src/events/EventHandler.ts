@@ -8,6 +8,9 @@ import Logger from '../utils/misc/Logger.ts';
 import Channel from '../structures/channel/Channel.ts';
 import TextChannel from '../structures/channel/TextChannel.ts';
 import Guild from '../structures/guild/Guild.ts';
+import VoiceChannel from "../structures/channel/VoiceChannel.ts";
+import CategoryChannel from "../structures/channel/CategoryChannel.ts";
+import GuildChannel from "../structures/channel/GuildChannel.ts";
 
 class EventHandler {
     private client: Client;
@@ -52,7 +55,11 @@ class EventHandler {
         const guild = this.client._cacheManager.guilds.get(data.guild_id);
         let message: Message;
 
-        if (channel) { channel.guild = this.client._cacheManager.guilds.get(channel.guildId) }
+        if (channel) {
+            channel.guild = guild || {
+                id: data.guild_id
+            };
+        }
 
         message = new Message(data, channel, guild);
         this.client._cacheManager.add(message);
@@ -60,29 +67,52 @@ class EventHandler {
     }
 
     public onChannelCreate(data: any): void {
-        let channel: Channel;
+        let channel: GuildChannel;
+        const guild = this.client._cacheManager.guilds.get(data.guild_id);
         let type: string = Channel.getTypeString(data.type);
-        if(type === 'text') {
-            channel = new TextChannel(data);
-            this.client._cacheManager.add(channel);
-        } else {
-            channel = new Channel(data.id);
+        switch(type) {
+            case 'text':
+                channel = new TextChannel(data, guild);
+                this.client._cacheManager.add(channel);
+                break;
+            case 'voice':
+                channel = new VoiceChannel(data, guild);
+                this.client._cacheManager.add(channel);
+                break;
+            case 'category':
+                channel = new CategoryChannel(data, guild);
+                this.client._cacheManager.add(channel);
+                break;
+            default:
+                channel = new GuildChannel(data);
+                this.client._cacheManager.add(channel);
         }
 
         this.client.emit('channelCreate', channel);
     }
 
-    public onChanneUpdate(data: any): void {
-        let channel: Channel;
-        let type: string = Channel.getTypeString(data.type);
-        if(type === 'text') {
-            channel = new TextChannel(data);
-            this.client._cacheManager.add(channel);
-        } else {
-            channel = new Channel(data.id);
-            this.client._cacheManager.add(channel);
+    public onChannelUpdate(data: any): void {
+        let channel: GuildChannel;
+        const guild = this.client._cacheManager.guilds.get(data.guild_id);
+        let type = Channel.getTypeString(data.type);
+
+        switch(type) {
+            case 'text':
+                channel = new TextChannel(data, guild);
+                this.client._cacheManager.add(channel);
+                break;
+            case 'voice':
+                channel = new VoiceChannel(data, guild);
+                this.client._cacheManager.add(channel);
+                break;
+            case 'category':
+                channel = new CategoryChannel(data, guild);
+                this.client._cacheManager.add(channel);
+                break;
+            default:
+                channel = new GuildChannel(data);
+                this.client._cacheManager.add(channel);
         }
-        
         this.client.emit('channelUpdate', channel);
     }
 
@@ -92,13 +122,13 @@ class EventHandler {
         // todo: members.
         data.channels.forEach((c: any) => {
             c.guild_id = data.id;
-            this.onChanneUpdate(c); // this really shouldn't be here.
+            this.onChannelUpdate(c); // this really shouldn't be here.
         });
         this.client.emit('guildCreate', guild);
     }
 
     public onGuildUpdate(data: any): void {
-        data.channels.forEach((c: any) => this.onChanneUpdate(c));
+        data.channels.forEach((c: any) => this.onChannelUpdate(c));
         this.client.emit('')
         // to do update cache
     }

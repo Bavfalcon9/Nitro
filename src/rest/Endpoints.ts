@@ -10,6 +10,12 @@ class Endpoints {
     public static CHANNEL_PURGE = (id: string) => `/channels/${id}/messages/bulk-delete`;
     public static CHANNEL_MESSAGES = (id: string, mid: string = '') => `/channels/${id}/messages${mid === '' ? '' : '/' + mid}`;
 
+    public static GUILD = (id: string) => `/guilds/${id}`
+    public static GUILD_ROLES = (id: string) => `/guilds/${id}/roles`
+
+    public static CREATE_BAN = (id: string, mid: string) => `/guilds/${id}/bans/${mid}`
+    public static CREATE_KICK = (id: string, mid: string) => `/guilds/${id}/members/${mid}`
+
     public static get(method: (...params: any[]) => string, ...params: string[]): string {
         return Endpoints.BASE_URL + method(...params);
     }

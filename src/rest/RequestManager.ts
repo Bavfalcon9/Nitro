@@ -5,6 +5,9 @@ import Message from '../structures/Message.ts';
 import Client from '../Client.ts';
 import { ApplicationInformation } from '../network/discord/interfaces/ApplicationInformation.ts';
 import SimpleEmbed from '../utils/discord/SimpleEmbed.ts';
+import Role from '../structures/guild/Role.ts';
+import GuildMember from '../structures/guild/GuildMember.ts';
+import Guild from '../structures/guild/Guild.ts';
 
 class RequestManager {
      private static client: Client;
@@ -112,6 +115,54 @@ class RequestManager {
                return false;
           } else {
                return await response.json();
+          }
+     }
+
+     public static async getGuild(gid: string): Promise<null|Guild> {
+          const response = await RequestManager.request(Endpoints.REST_BASE_URL + Endpoints.GUILD(gid), {
+               method: 'GET'
+          });
+          if(!response.ok) {
+               return null;
+          } else {
+               return (await response.json() as Guild)
+          }
+     }
+
+     public static async getRoles(gid: string): Promise<null|Role[]> {
+          const response = await RequestManager.request(Endpoints.REST_BASE_URL + Endpoints.GUILD_ROLES(gid), {
+               method: 'GET'
+          });
+          if(!response.ok) {
+               return null;
+          } else {
+               return await response.json() as Role[]
+          }
+     }
+
+     public static async banMember(gid: string, mid: string, deleteMessagesDays?: 1|2|3|4|5|6|7, reason?: string): Promise<string | void> {
+          const response = await RequestManager.request(Endpoints.REST_BASE_URL + Endpoints.CREATE_BAN(gid, mid), {
+               method: 'PUT',
+               body: JSON.stringify({
+                    delete_messages_days: deleteMessagesDays,
+                    reason: reason
+               })
+          });
+          if(!response.ok) {
+               return await response.text();
+          } else {
+               return;
+          }
+     }
+
+     public static async kickMember(gid: string, mid: string, reason?: string): Promise<string | void> {
+          const response = await RequestManager.request(Endpoints.REST_BASE_URL + Endpoints.CREATE_KICK(gid, mid), {
+               method: 'DELETE'
+          });
+          if(!response.ok) {
+               return await response.text();
+          } else {
+               return;
           }
      }
 }

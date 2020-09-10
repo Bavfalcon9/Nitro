@@ -1,11 +1,13 @@
+import Guild from "../guild/Guild.ts";
+import Client from "../../Client.ts";
 import Base from "../Base.ts";
 
 class Channel extends Base {
-     constructor(id: string) {
-          super(id);
+     constructor(data: any) {
+          super(data.id);
      }
 
-     public static getTypeString(type: number): string {
+     public static getTypeString(type: number): 'text' | 'dm' | 'voice' | 'group' | 'category' | 'news' | 'store' | 'video' {
           switch(type) {
                default:
                case 0:

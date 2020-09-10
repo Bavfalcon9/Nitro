@@ -13,6 +13,7 @@ class GuildChannel extends Channel {
     public permissionOverwrites: PermissionOverwite[];
 
     constructor(data: any, guild?: Guild) {
+        // not sure why this exists, the properties are existent on text channel. a simple bool?
         super(data);
         this.id = data.id
         this.guild = guild;

@@ -26,7 +26,7 @@ class Message extends Base {
     public attachments: any[]; // Leave as any for now
     public args: string[];
 
-    constructor(data: any, channel?: TextChannel, guild?: Guild) {
+    constructor(data: any, channel?: TextChannel) {
         super(data.id);
         // probably should add something that autoconstrcuts payloads based on data.
         // To Do: Restructure.
@@ -39,7 +39,7 @@ class Message extends Base {
         this.flags = data.flags;
         this.embeds = data.embeds;
         this.guild_id = data.guild_id
-        this.guild = guild || this.genDummyGuild();
+        this.guild = (this.guild_id === null) ? this.genDummyChannel().guild : channel.guild;
         this.content = data.content;
         this.channel_id = data.channel_id;
         this.channel = channel || this.genDummyChannel();
@@ -90,6 +90,7 @@ class Message extends Base {
     private genDummyChannel(): TextChannel {
         const DummyObj = TextChannel.dummyObject();
         DummyObj.id = this.channel_id;
+        DummyObj.guild = this.genDummyGuild();
         return new TextChannel(DummyObj);
     }
 

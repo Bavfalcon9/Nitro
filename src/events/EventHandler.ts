@@ -98,15 +98,15 @@ class EventHandler {
 
         switch(type) {
             case 'text':
-                channel = new TextChannel(data, guild);
+                channel = new TextChannel(data);
                 this.client._cacheManager.add(channel);
                 break;
             case 'voice':
-                channel = new VoiceChannel(data, guild);
+                channel = new VoiceChannel(data);
                 this.client._cacheManager.add(channel);
                 break;
             case 'category':
-                channel = new CategoryChannel(data, guild);
+                channel = new CategoryChannel(data);
                 this.client._cacheManager.add(channel);
                 break;
             default:

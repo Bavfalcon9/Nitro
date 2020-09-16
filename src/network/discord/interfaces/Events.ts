@@ -1,6 +1,6 @@
 class Events {
-     public static Hello: string = "HELLO"; // defines the heartbeat interval
-     /**
+  public static Hello: string = "HELLO"; // defines the heartbeat interval
+  /**
       * Hello	defines the heartbeat interval
       * Ready	contains the initial state information
       * Resumed	response to Resume

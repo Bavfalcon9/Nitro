@@ -60,6 +60,7 @@ class Intents {
     if ((n & IntentCodes.GUILDS) === IntentCodes.GUILDS) allowed.push('guilds');
     if ((n & IntentCodes.EMOJIS) === IntentCodes.EMOJIS) allowed.push('emojis');
     if ((n & IntentCodes.INTEGRATIONS) === IntentCodes.INTEGRATIONS) allowed.push('integrations');
+    if ((n & IntentCodes.MESSAGES) === IntentCodes.MESSAGES) allowed.push('messages');
     if ((n & IntentCodes.MEMBERS) === IntentCodes.MEMBERS) allowed.push('members');
     if ((n & IntentCodes.INVITES) === IntentCodes.INVITES) allowed.push('invites');
     if ((n & IntentCodes.MESSAGE_REACTIONS) === IntentCodes.MESSAGE_REACTIONS) allowed.push('messageReactions');
@@ -71,6 +72,10 @@ class Intents {
     if ((n & IntentCodes.DIRECT_MESSAGE_REACTIONS) === IntentCodes.DIRECT_MESSAGE_REACTIONS) allowed.push('directMessageReactions');
     if ((n & IntentCodes.DIRECT_MESSAGE_TYPING) === IntentCodes.DIRECT_MESSAGE_TYPING) allowed.push('directMessageTyping');
     return new this(allowed);
+  }
+
+  public has(intent: IntentTypes): boolean {
+    return this.currentIntents.includes(intent);
   }
 
   public parse(): number {

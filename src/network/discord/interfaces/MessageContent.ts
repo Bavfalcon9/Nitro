@@ -1,4 +1,4 @@
-import SimpleEmbed from "../../../utils/discord/SimpleEmbed.ts";
+import type SimpleEmbed from "../../../utils/discord/SimpleEmbed.ts";
 
 interface MessageContent {
   tts?: boolean;

@@ -1,8 +1,11 @@
 import { Client, Message, SimpleEmbed, Logger, ClearColor } from "../mod.ts";
-import { readJson } from "https://deno.land/std/fs/mod.ts";
+import Intents from "../src/utils/discord/Intents.ts";
 
 const bot: Client = new Client();
-const { token }: any = await readJson(Deno.cwd() + "/config.json");
+bot.intents = Intents.defaults();
+const { token }: any = JSON.parse(
+  await Deno.readTextFile(Deno.cwd() + "/config.json"),
+);
 
 bot.on("message", async (msg: Message) => {
   switch (msg.getCommand("!")) {

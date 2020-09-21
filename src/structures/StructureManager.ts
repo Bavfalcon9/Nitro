@@ -1,4 +1,4 @@
-import type Base from "./Base.ts"
+import type Base from "./Base.ts";
 
 type AnyStructure = <T extends Base>() => T;
 
@@ -9,7 +9,7 @@ class StructureManager {
     this.structures = new Map();
   }
 
-  public getStructure(name: string): AnyStructure|null {
+  public getStructure(name: string): AnyStructure | null {
     if (!this.structures.has(name)) return null;
     return this.structures.get(name) as AnyStructure;
   }

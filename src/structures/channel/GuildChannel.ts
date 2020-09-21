@@ -1,4 +1,4 @@
-import Guild from "../guild/Guild.ts";
+import type Guild from "../guild/Guild.ts";
 import PermissionOverwite from "../PermissionOverwrite.ts";
 import Channel from "./Channel.ts";
 

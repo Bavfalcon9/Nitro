@@ -1,4 +1,5 @@
-export type Events = "unknown"
+export type Events =
+  | "unknown"
   | "ready"
   | "resume"
   | "reconnect"
@@ -45,7 +46,7 @@ interface WrappedFunction extends Function {
 }
 
 class EventHandlerv2 {
-  private events: Map<Events, Array<WrappedFunction|GenericFunction>>;
+  private events: Map<Events, Array<WrappedFunction | GenericFunction>>;
   private maxListeners: number;
 
   public constructor() {
@@ -58,16 +59,18 @@ class EventHandlerv2 {
    * @param event 
    * @param listener 
    */
-  public on(event: Events, listener: WrappedFunction|GenericFunction): void {
+  public on(event: Events, listener: WrappedFunction | GenericFunction): void {
     if (this.events.has(event)) {
-      let listeners = this.events.get(event) as Array<WrappedFunction|GenericFunction>;
+      let listeners = this.events.get(event) as Array<
+        WrappedFunction | GenericFunction
+      >;
       if (listener.length >= this.maxListeners) {
         // to-do: Better chekc
       }
       listeners.push(listener);
       this.events.set(event, listeners);
     } else {
-      this.events.set(event, [ listener ]);
+      this.events.set(event, [listener]);
     }
   }
 
@@ -78,16 +81,16 @@ class EventHandlerv2 {
     // wrap the function
     const wrapper = function (
       this: {
-        event: Events,
-        listener: GenericFunction,
-        rawListener: WrappedFunction,
-        context: EventHandlerv2
+        event: Events;
+        listener: GenericFunction;
+        rawListener: WrappedFunction;
+        context: EventHandlerv2;
       },
       ...args: any[]
     ): void {
       this.context.removeListener(this.event, this.listener);
       this.listener.apply(this.context, args);
-    }
+    };
     const context = {
       event: event,
       listener: listener,
@@ -109,8 +112,10 @@ class EventHandlerv2 {
     if (!this.events.has(event)) {
       return false;
     }
-    let listeners: GenericFunction[] = this.events.get(event) as GenericFunction[];
-    let listenerIndex: number|null = null;
+    let listeners: GenericFunction[] = this.events.get(
+      event,
+    ) as GenericFunction[];
+    let listenerIndex: number | null = null;
 
     for (let i = 0; i < listeners.length; i++) {
       if (listeners[i] == listener) {
@@ -119,7 +124,7 @@ class EventHandlerv2 {
       }
     }
 
-    if (typeof listenerIndex === 'number') {
+    if (typeof listenerIndex === "number") {
       listeners.splice(listenerIndex, 1);
       this.events.set(event, listeners);
     }
@@ -135,9 +140,11 @@ class EventHandlerv2 {
     if (!this.events.has(event)) {
       return;
     } else {
-      (this.events.get(event) as GenericFunction[]).slice().forEach(listener => {
-        listener(...args);
-      });
+      (this.events.get(event) as GenericFunction[]).slice().forEach(
+        (listener) => {
+          listener(...args);
+        },
+      );
     }
   }
 }

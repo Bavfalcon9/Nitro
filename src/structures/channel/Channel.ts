@@ -1,5 +1,3 @@
-import Guild from "../guild/Guild.ts";
-import Client from "../../Client.ts";
 import Base from "../Base.ts";
 
 class Channel extends Base {

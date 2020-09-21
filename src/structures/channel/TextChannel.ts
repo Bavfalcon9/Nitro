@@ -1,11 +1,11 @@
+import type MessageContent from "../../network/discord/interfaces/MessageContent.ts";
+import type Message from "../Message.ts";
+import type SimpleEmbed from "../../utils/discord/SimpleEmbed.ts";
+import type Guild from "../guild/Guild.ts";
 import Channel from "./Channel.ts";
-import MessageContent from "../../network/discord/interfaces/MessageContent.ts";
 import RequestManager from "../../rest/RequestManager.ts";
-import Message from "../Message.ts";
-import SimpleEmbed from "../../utils/discord/SimpleEmbed.ts";
 import PermissionOverwite from "../PermissionOverwrite.ts";
 import Client from "../../Client.ts";
-import Guild from "../guild/Guild.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 class TextChannel extends GuildChannel {

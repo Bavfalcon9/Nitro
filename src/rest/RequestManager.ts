@@ -1,4 +1,4 @@
-import ProtectedDataStore from "../stores/ProtectedDataStore.ts";
+import ProtectedDataStore from "../data/ProtectedStore.ts";
 import Endpoints from "./Endpoints.ts";
 import type MessageContent from "../network/discord/interfaces/MessageContent.ts";
 import Message from "../structures/Message.ts";

@@ -1,7 +1,6 @@
 class Endpoints {
   public static BASE_URL: string = "https://discordapp.com/api/";
-  public static GATEWAY: string =
-    `wss://gateway.discord.gg/?v=6&encoding=json&compress=zlib-stream`;
+  public static GATEWAY: string = `wss://gateway.discord.gg/?v=6&encoding=json`; // &compress=zlib-stream
   public static VERSION: string = "v8";
   public static REST_BASE_URL: string = Endpoints.BASE_URL + Endpoints.VERSION;
 

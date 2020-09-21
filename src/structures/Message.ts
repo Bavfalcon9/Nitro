@@ -2,7 +2,7 @@ import User from "./User.ts";
 import Base from "./Base.ts";
 import Channel from "./channel/Channel.ts";
 import TextChannel from "./channel/TextChannel.ts";
-import MessageContent from "../network/discord/interfaces/MessageContent.ts";
+import type MessageContent from "../network/discord/interfaces/MessageContent.ts";
 import RequestManager from "../rest/RequestManager.ts";
 import Sleep from "../utils/misc/Sleep.ts";
 import Guild from "../structures/guild/Guild.ts";
@@ -18,7 +18,6 @@ class Message extends Base {
   public embeds: any[]; // Leave as any for now
   public edited_timestamp: any;
   public guild_id: string;
-  public guild: Guild;
   public content: string;
   public channel_id: string;
   public channel: TextChannel;
@@ -39,9 +38,6 @@ class Message extends Base {
     this.flags = data.flags;
     this.embeds = data.embeds;
     this.guild_id = data.guild_id;
-    this.guild = (this.guild_id === null)
-      ? this.genDummyChannel().guild
-      : channel.guild;
     this.content = data.content;
     this.channel_id = data.channel_id;
     this.channel = channel || this.genDummyChannel();

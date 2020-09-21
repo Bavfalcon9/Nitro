@@ -19,7 +19,7 @@ export interface CacheOptions {
   channels?: Settings;
   messages?: Settings;
   invites?: Settings;
-  $options?: HardOptions;
+  database?: HardOptions;
 }
 
 export const OptimizedOptions: CacheOptions = {

@@ -1,7 +1,7 @@
 import Base from "../Base.ts";
-import User from "../User.ts";
-import Guild from "./Guild.ts";
-import Role from "./Role.ts";
+import type User from "../User.ts";
+import type Guild from "./Guild.ts";
+import type Role from "./Role.ts";
 
 class GuildMember extends Base {
   public user: User;

@@ -1,40 +1,38 @@
+import type ClientUser from "./structures/ClientUser.ts";
+import type Packet from "./network/discord/packets/Packet.ts";
+import type { ApplicationInformation } from "./network/discord/interfaces/ApplicationInformation.ts";
+import type User from "./structures/User.ts";
+import type Message from "./structures/Message.ts";
+import type Channel from "./structures/channel/Channel.ts";
+import type Guild from "./structures/guild/Guild.ts";
+import type Invite from "./structures/guild/Invite.ts";
+import { CacheOptions, DefaultOptions } from "./cache/CacheOptions.ts";
 import EventHandlerv2 from "./data/EventHandlerv2.ts";
 import HeartBeatPacket from "./network/discord/packets/HeartBeatPacket.ts";
 import WebsocketManager from "./network/WebsocketManager.ts";
 import ProtectedDataStore from "./data/ProtectedStore.ts";
-import type ClientUser from "./structures/ClientUser.ts";
-import type Packet from "./network/discord/packets/Packet.ts";
-import EventHandler from "./data/EventHandler.ts";
-import type User from "./structures/User.ts";
-import Message from "./structures/Message.ts";
-import CacheManager from "./cache/CacheManager.ts";
 import RequestManager from "./rest/RequestManager.ts";
-import { CacheOptions, DefaultOptions } from "./cache/CacheOptions.ts";
 import Application from "./structures/oauth2/Application.ts";
-import type { ApplicationInformation } from "./network/discord/interfaces/ApplicationInformation.ts";
+import DataStore from "./data/DataStore.ts";
+import type Intents from "./utils/discord/Intents.ts";
 
 class Client extends EventHandlerv2 {
   public application: Application | null;
-  public cacheManager: CacheManager;
-  public eventsHandle: EventHandler;
   public lastACK?: number;
   public sessionId: string;
   public user!: ClientUser;
+  public intents?: Intents;
   private requestManager: RequestManager;
   private wsm?: WebsocketManager;
   private heartInterval?: number;
+  private dataStore: DataStore;
 
   constructor(cacheOptions: CacheOptions = DefaultOptions) {
     super();
     this.application = null;
-    this.cacheManager = new CacheManager(this, cacheOptions);
-    this.eventsHandle = new EventHandler(this);
+    this.dataStore = new DataStore(this, cacheOptions);
     this.requestManager = new RequestManager(this);
     this.sessionId = "0";
-  }
-
-  public get users(): Map<string, User> {
-    return this.cacheManager.users;
   }
 
   public connect(token: string): void {
@@ -87,6 +85,30 @@ class Client extends EventHandlerv2 {
     } else {
       this.application = new Application(res);
     }
+  }
+
+  public get channels(): Map<string, Channel> {
+    return this.dataStore.channels;
+  }
+
+  public get guilds(): Map<string, Guild> {
+    return this.dataStore.guilds;
+  }
+
+  public get users(): Map<string, User> {
+    return this.dataStore.users;
+  }
+
+  public get invites(): Map<string, Invite> {
+    return this.dataStore.invites;
+  }
+
+  public get messages(): Map<string, Message> {
+    return this.dataStore.messages;
+  }
+
+  public get _dataStore(): DataStore {
+    return this.dataStore;
   }
 }
 export default Client;

@@ -1,8 +1,13 @@
 import type Client from "../Client.ts";
 import type EventPacket from "../network/discord/packets/EventPacket.ts";
-import ClientUser from "../structures/ClientUser.ts";
-import Message from "../structures/Message.ts";
 import type { Events } from "./EventHandlerv2.ts";
+import Channel from "../structures/channel/Channel.ts";
+import TextChannel from "../structures/channel/TextChannel.ts";
+import ClientUser from "../structures/ClientUser.ts";
+import Guild from "../structures/guild/Guild.ts";
+import Message from "../structures/Message.ts";
+import CategoryChannel from "../structures/channel/CategoryChannel.ts";
+import VoiceChannel from "../structures/channel/VoiceChannel.ts";
 
 // Handles how data is processed in nitro
 class DataHandler {
@@ -14,122 +19,123 @@ class DataHandler {
   }
 
   public handlePacket(client: Client, packet: EventPacket): void {
-    let evName: Events, evName2: Events;
+    let evName: Events;
+    let evName2: Events|undefined = undefined;
 
     // I KNOW THERES A BETTER WAY BUT FOFF
     switch (packet.event) {
       case "READY":
-        evName = 'ready';
+        evName = "ready";
         break;
       case "CHANNEL_CREATE":
-        evName = 'channelCreate';
+        evName = "channelCreate";
         break;
       case "CHANNEL_UPDATE":
-        evName = 'channelUpdate';
+        evName = "channelUpdate";
         break;
       case "CHANNEL_DELETE":
-        evName = 'channelDelete';
+        evName = "channelDelete";
         break;
       case "CHANNEL_PINS_UPDATE":
-        evName = 'pinUpdate';
+        evName = "pinUpdate";
         break;
       case "GUILD_CREATE":
-        evName = 'guildCreate';
+        evName = "guildCreate";
         break;
       case "GUILD_UPDATE":
-        evName = 'guildUpdate';
+        evName = "guildUpdate";
         break;
       case "GUILD_DELETE":
-        evName = 'guildDelete';
+        evName = "guildDelete";
         break;
       case "GUILD_BAN_ADD":
-        evName = 'banAdd';
+        evName = "banAdd";
         break;
       case "GUILD_BAN_REMOVE":
-        evName = 'banRemove';
+        evName = "banRemove";
         break;
       case "GUILD_EMOJIS_UPDATE":
-        evName = 'emojisUpdate';
+        evName = "emojisUpdate";
         break;
       case "GUILD_INTEGRATIONS_UPDATE":
-        evName = 'integrationsUpdate';
+        evName = "integrationsUpdate";
         break;
       case "GUILD_MEMBER_ADD":
-        evName = 'memberJoin';
+        evName = "memberJoin";
         break;
       case "GUILD_MEMBER_UPDATE":
-        evName = 'memberUpdate';
+        evName = "memberUpdate";
         break;
       case "GUILD_MEMBER_REMOVE":
-        evName = 'memberRemove';
+        evName = "memberRemove";
         break;
       case "GUILD_MEMBERS_CHUNK":
-        evName = 'membersChunk';
+        evName = "membersChunk";
         break;
       case "GUILD_ROLE_CREATE":
-        evName = 'roleCreate';
+        evName = "roleCreate";
         break;
       case "GUILD_ROLE_UPDATE":
-        evName = 'roleUpdate';
+        evName = "roleUpdate";
         break;
       case "GUILD_ROLE_DELETE":
-        evName = 'roleDelete';
+        evName = "roleDelete";
         break;
       case "INVITE_CREATE":
-        evName = 'inviteCreate';
+        evName = "inviteCreate";
         break;
       case "INVITE_DELETE":
-        evName = 'inviteDelete';
+        evName = "inviteDelete";
         break;
       case "MESSAGE_CREATE":
-        evName = 'message';
-        evName2 = 'messageCreate';
+        evName = "messageCreate";
+        evName2 = "message";
         break;
       case "MESSAGE_UPDATE":
-        evName = 'messageUpdate';
+        evName = "messageUpdate";
         break;
       case "MESSAGE_DELETE":
-        evName = 'messageDelete';
+        evName = "messageDelete";
         break;
       case "MESSAGE_DELETE_BULK":
-        evName = 'messageDeleteBulk';
+        evName = "messageDeleteBulk";
         break;
       case "MESSAGE_REACTION_ADD":
-        evName = 'reactionAdd';
+        evName = "reactionAdd";
         break;
       case "MESSAGE_REACTION_UPDATE":
-        evName = 'reactionUpdate';
+        evName = "reactionUpdate";
         break;
       case "MESSAGE_REACTION_REMOVE":
-        evName = 'reactionRemove';
+        evName = "reactionRemove";
         break;
       case "MESSAGE_REACTION_REMOVE_ALL":
-        evName = 'reactionRemoveAll';
+        evName = "reactionRemoveAll";
         break;
       case "MESSAGE_REACTION_REMOVE_EMOJI":
-        evName = 'reactionRemoveEmoji';
+        evName = "reactionRemoveEmoji";
         break;
       case "PRESENCE_UPDATE":
-        evName = 'presenceUpdate';
+        evName = "presenceUpdate";
         break;
       case "TYPING_START":
-        evName = 'typingStart';
+        evName = "typingStart";
         break;
       case "USER_UPDATE":
-        evName = 'userUpdate';
+        evName = "userUpdate";
         break;
       case "VOICE_STATE_UPDATE":
-        evName = 'voiceStateUpdate';
+        evName = "voiceStateUpdate";
         break;
       case "VOICE_SERVER_UPDATE":
-        evName = 'voiceRegionUpdate';
+        evName = "voiceRegionUpdate";
         break;
       case "WEBHOOKS_UPDATE":
-        evName = 'webhookUpdate';
+        evName = "webhookUpdate";
         break;
       case "unknown":
       default:
-        evName = 'unknown';
+        evName = "unknown";
         break;
     }
 
@@ -137,11 +143,14 @@ class DataHandler {
 
     let structures: any[];
     if ((this as any)[evName] !== undefined) {
-      let returnVal: any = (this as any)[evName](packet.data) || [];
-      structures = (returnVal instanceof Array) ? returnVal : [ returnVal ];
+      let returnVal: any = (this as any)[evName](client, packet.data) || [];
+      structures = (returnVal instanceof Array) ? returnVal : [returnVal];
       client.emit(evName, ...structures);
+      if (evName2) {
+        client.emit(evName2, ...structures);
+      }
     } else {
-      client.emit('unknown', { event: evName, data: packet.data });
+      client.emit("unknown", { event: evName, data: packet.data });
     }
   }
 
@@ -150,9 +159,64 @@ class DataHandler {
    * @param client 
    * @param packet 
    */
-  protected ready(client: Client, packet: EventPacket): string {
-    client.user = new ClientUser(packet.data);
-    return packet.data.session_id || "0";
+  protected ready(client: Client, data: any): string {
+    client.user = new ClientUser(data.user);
+    return data.session_id || "0";
+  }
+
+  /**
+   * Creates a channel
+   * @param client 
+   * @param data 
+   */
+  public channelCreate(client: Client, data: any): Channel {
+    let channel!: Channel;
+    let guild: Guild | null;
+    guild = client.guilds.get(data.guild_id) || Guild.dummyObject();
+
+    switch (Channel.getTypeString(data.type)) {
+      case "text":
+        channel = new TextChannel(data);
+        break;
+      case "category":
+        channel = new CategoryChannel(data);
+        break;
+      case "voice":
+        channel = new VoiceChannel(data);
+        break;
+      case "news":
+        channel = new TextChannel(data);
+        break;
+    }
+
+    client._dataStore._channels?.set(channel);
+
+    return channel || new Channel(data);
+  }
+
+  /**
+   * Called when a channel is updated
+   * @param client 
+   * @param data 
+   */
+  public channelUpdate(client: Client, data: any): Channel {
+    return this.channelCreate(client, data);
+  }
+
+  /**
+   * Calls when the socket sends a create guild event.
+   * @param client 
+   * @param packet 
+   */
+  public guildCreate(client: Client, data: any): Guild {
+    let guild: Guild = new Guild(data);
+    client._dataStore._guilds?.set(guild);
+
+    data.channels.forEach((channel: any) => {
+      channel.guild_id = guild.id;
+      this.channelCreate(client, channel);
+    });
+    return guild;
   }
 
   /**
@@ -160,8 +224,12 @@ class DataHandler {
    * @param client 
    * @param packet
    */
-  public messageCreate(client: Client, packet: EventPacket): Message {
-    return new Message(packet.data);
+  public messageCreate(client: Client, data: any): Message {
+    let message: Message, channel: TextChannel|undefined;
+    channel = client.channels.get(data.id) as TextChannel|undefined;
+    message = new Message(data, channel);
+    client._dataStore._messages?.set(message);
+    return message;
   }
 }
 export default DataHandler;

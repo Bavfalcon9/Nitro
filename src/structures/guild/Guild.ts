@@ -1,11 +1,11 @@
+import type { Region } from "../../network/discord/interfaces/Region.ts";
+import type Role from "./Role.ts";
 import Base from "../Base.ts";
 import User from "../User.ts";
 import Channel from "../channel/Channel.ts";
-import { Region } from "../../network/discord/interfaces/Region.ts";
 import GuildMember from "./GuildMember.ts";
 import Emoji from "./Emoji.ts";
 //import GuildChannel from '../channel/GuildChannel.ts';
-import Role from "./Role.ts";
 import RequestManager from "../../rest/RequestManager.ts";
 
 class Guild extends Base {

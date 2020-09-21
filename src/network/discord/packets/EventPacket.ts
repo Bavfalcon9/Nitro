@@ -13,7 +13,7 @@ class EventPacket extends Packet {
 
   constructor(event: string | undefined, data: any, sequence?: number) {
     super(OPCodes.DISPATCH);
-    this.event = event || "";
+    this.event = event || "unknown";
     this.data = data;
     this.sequence = sequence;
   }

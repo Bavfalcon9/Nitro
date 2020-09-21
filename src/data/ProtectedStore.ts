@@ -1,4 +1,4 @@
-class ProtectedDataStore {
+class ProtectedStore {
   public static token?: string;
 
   hash(key: string, value: any): string {
@@ -13,4 +13,4 @@ class ProtectedDataStore {
     return protectedStream;
   }
 }
-export default ProtectedDataStore;
+export default ProtectedStore;

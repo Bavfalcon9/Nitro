@@ -1,4 +1,4 @@
-import Base from "../structures/Base.ts";
+import type Base from "../structures/Base.ts";
 
 export interface Settings {
   enabled?: boolean; // should nitro cache? Defaults to false

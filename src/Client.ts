@@ -1,10 +1,10 @@
-import { EventEmitter } from "https://deno.land/std/node/events.ts";
+import EventHandlerv2 from "./data/EventHandlerv2.ts";
 import HeartBeatPacket from "./network/discord/packets/HeartBeatPacket.ts";
 import WebsocketManager from "./network/WebsocketManager.ts";
-import ProtectedDataStore from "./stores/ProtectedDataStore.ts";
+import ProtectedDataStore from "./data/ProtectedStore.ts";
 import type ClientUser from "./structures/ClientUser.ts";
 import type Packet from "./network/discord/packets/Packet.ts";
-import EventHandler from "./events/EventHandler.ts";
+import EventHandler from "./data/EventHandler.ts";
 import type User from "./structures/User.ts";
 import Message from "./structures/Message.ts";
 import CacheManager from "./cache/CacheManager.ts";
@@ -13,7 +13,7 @@ import { CacheOptions, DefaultOptions } from "./cache/CacheOptions.ts";
 import Application from "./structures/oauth2/Application.ts";
 import type { ApplicationInformation } from "./network/discord/interfaces/ApplicationInformation.ts";
 
-class Client extends EventEmitter {
+class Client extends EventHandlerv2 {
   public application: Application | null;
   public cacheManager: CacheManager;
   public eventsHandle: EventHandler;
@@ -73,11 +73,10 @@ class Client extends EventEmitter {
     this.wsm = undefined;
     clearInterval(this.heartInterval);
     this.heartInterval = undefined;
-    // to do: options [reconnect?]
   }
 
-  public async sendPacket(pk: Packet): Promise<void> {
-    return await this.wsm?.send(pk.parsePacket());
+  public sendPacket(pk: Packet): void {
+    this.wsm?.send(pk.parsePacket());
   }
 
   private async resolveApplication(): Promise<void> {

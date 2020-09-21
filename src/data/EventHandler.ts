@@ -33,7 +33,7 @@ class EventHandler {
       (this as any)[funcName](pk.data);
       return;
     } else {
-      this.client.emit("raw" + funcName.replace("on", ""), pk.data);
+      //this.client.emit("raw" + funcName.replace("on", ""), pk.data);
     }
   }
 
@@ -132,7 +132,7 @@ class EventHandler {
 
   public onGuildUpdate(data: any): void {
     data.channels.forEach((c: any) => this.onChannelUpdate(c));
-    this.client.emit("");
+    this.client.emit("unknown");
     // to do update cache
   }
 }

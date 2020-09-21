@@ -3,7 +3,7 @@ import Packet from "./discord/packets/Packet.ts";
 import OPCodes from "./discord/interfaces/OPCodes.ts";
 import HeartBeatPacket from "./discord/packets/HeartBeatPacket.ts";
 import LoginPacket from "./discord/packets/LoginPacket.ts";
-import ProtectedDataStore from "../stores/ProtectedDataStore.ts";
+import ProtectedStore from "../data/ProtectedStore.ts";
 import Logger from "../utils/misc/Logger.ts";
 import EventPacket from "./discord/packets/EventPacket.ts";
 import ResumePacket from "./discord/packets/ResumePacket.ts";
@@ -36,7 +36,9 @@ class WebsocketManager {
   public async send(payload: Payload): Promise<void> {
     try {
       this.ws.send(JSON.stringify(payload));
+      return;
     } catch (e) {
+      return;
     }
   }
 
@@ -62,11 +64,11 @@ class WebsocketManager {
         // ready.
         packet = HeartBeatPacket.fromPayload(payload);
         this.client.initHeartbeat(packet.interval);
-        this.client.sendPacket(new LoginPacket(ProtectedDataStore.token));
+        this.client.sendPacket(new LoginPacket(ProtectedStore.token));
         break;
       case OPCodes.RECONNECT:
         packet = new ResumePacket(
-          ProtectedDataStore.token,
+          ProtectedStore.token,
           this.client.sessionId,
           this.lastSequence,
         );

@@ -228,6 +228,7 @@ class DataHandler {
     let message: Message, channel: TextChannel|undefined;
     channel = client.channels.get(data.id) as TextChannel|undefined;
     message = new Message(data, channel);
+    client._dataStore._users?.set(message.author);
     client._dataStore._messages?.set(message);
     return message;
   }

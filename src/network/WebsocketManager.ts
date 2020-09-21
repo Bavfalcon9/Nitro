@@ -24,7 +24,7 @@ class WebsocketManager {
     this.dataHandler = new DataHandler();
   }
 
-  public async init(client: Client): Promise<void> {
+  public async init(client: Client, token: string): Promise<void> {
     this.client = client;
     this.logger.debug("Connecting...");
     this.ws = new WebSocket(Endpoints.GATEWAY);
@@ -41,11 +41,11 @@ class WebsocketManager {
           // ready.
           packet = HeartBeatPacket.fromPayload(payload);
           this.client.initHeartbeat(packet.interval);
-          this.client.sendPacket(new LoginPacket(ProtectedStore.token, false, this.client.intents?.parse() || Intents.defaults().parse()));
+          this.client.sendPacket(new LoginPacket(token, false, this.client.intents?.parse() || Intents.defaults().parse()));
           break;
         case OPCodes.RECONNECT:
           packet = new ResumePacket(
-            ProtectedStore.token,
+            token,
             this.client.sessionId,
             this.lastSequence,
           );

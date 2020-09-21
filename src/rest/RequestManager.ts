@@ -11,9 +11,11 @@ import type Guild from "../structures/guild/Guild.ts";
 
 class RequestManager {
   private static client: Client;
+  private static token: string;
 
-  constructor(client: Client) {
+  constructor(client: Client, token: string) {
     RequestManager.client = client;
+    RequestManager.token = token;
     // to do: Queue system (respect discord rate limits)
     // to do: Handle errors correctly, pass through promise.
     // to do: Never
@@ -29,14 +31,13 @@ class RequestManager {
     //this._queue.add(Request);
     return RequestManager.request(url, req);
   }
-
   /**
       * Send a request and handle the response respectfully (not yet :o)
       * @param req - Request
       */
   public static request(url: string, req: RequestInit): Promise<Response> {
     req.headers = {
-      "Authorization": "Bot " + ProtectedDataStore.token || "",
+      "Authorization": "Bot " + this.token || "",
       "User-Agent": "Nitro (https://github.com/Bavfalcon9/Nitro)",
     };
 

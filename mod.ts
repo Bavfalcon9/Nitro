@@ -19,3 +19,4 @@ export { default as Invite } from "./src/structures/guild/Invite.ts";
 export { default as SimpleEmbed } from "./src/utils/discord/SimpleEmbed.ts";
 export { default as ClearColor } from "./src/utils/misc/ClearColor.ts";
 export { default as Logger } from "./src/utils/misc/Logger.ts";
+export { default as ProtectedStore } from "./src/data/ProtectedStore.ts";

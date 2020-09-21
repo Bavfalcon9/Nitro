@@ -1,8 +1,6 @@
-import { Client, Message, SimpleEmbed, Logger, ClearColor, VERSION } from "../mod.ts";
-import Intents from "../src/utils/discord/Intents.ts";
+import { Client, Message, SimpleEmbed, Logger, ClearColor, VERSION, ProtectedStore } from "../mod.ts";
 
 const bot: Client = new Client();
-bot.intents = Intents.defaults();
 const { token }: any = JSON.parse(
   await Deno.readTextFile(Deno.cwd() + "/config.json"),
 );

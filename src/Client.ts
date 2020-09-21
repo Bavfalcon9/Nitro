@@ -10,11 +10,11 @@ import { CacheOptions, DefaultOptions } from "./cache/CacheOptions.ts";
 import EventHandlerv2 from "./data/EventHandlerv2.ts";
 import HeartBeatPacket from "./network/discord/packets/HeartBeatPacket.ts";
 import WebsocketManager from "./network/WebsocketManager.ts";
-import ProtectedDataStore from "./data/ProtectedStore.ts";
 import RequestManager from "./rest/RequestManager.ts";
 import Application from "./structures/oauth2/Application.ts";
 import DataStore from "./data/DataStore.ts";
 import type Intents from "./utils/discord/Intents.ts";
+import ProtectedStore, { randomstring } from "./data/ProtectedStore.ts";
 
 class Client extends EventHandlerv2 {
   public application: Application | null;
@@ -22,7 +22,8 @@ class Client extends EventHandlerv2 {
   public sessionId: string;
   public user!: ClientUser;
   public intents?: Intents;
-  private requestManager: RequestManager;
+  public protectedStore!: ProtectedStore;
+  private requestManager!: RequestManager;
   private wsm?: WebsocketManager;
   private heartInterval?: number;
   private dataStore: DataStore;
@@ -31,7 +32,6 @@ class Client extends EventHandlerv2 {
     super();
     this.application = null;
     this.dataStore = new DataStore(this, cacheOptions);
-    this.requestManager = new RequestManager(this);
     this.sessionId = "0";
   }
 
@@ -42,10 +42,12 @@ class Client extends EventHandlerv2 {
       );
     }
 
-    ProtectedDataStore.token = token; // redo how this is handled
+    this.protectedStore = new ProtectedStore();
+    this.protectedStore.set('token', token);
+    this.requestManager = new RequestManager(this, token);
     this.wsm = new WebsocketManager();
     try {
-      this.wsm.init(this);
+      this.wsm.init(this, token);
       this.resolveApplication();
     } catch (err) {
       throw err;

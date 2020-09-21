@@ -1,4 +1,4 @@
-import { Client, Message, SimpleEmbed, Logger, ClearColor } from "../mod.ts";
+import { Client, Message, SimpleEmbed, Logger, ClearColor, VERSION } from "../mod.ts";
 import Intents from "../src/utils/discord/Intents.ts";
 
 const bot: Client = new Client();
@@ -30,6 +30,7 @@ bot.on("message", async (msg: Message) => {
       break;
     case "channel":
       msg.channel.send(`\`\`\`js\n${JSON.stringify(msg.channel)}\n\`\`\``);
+      break;
     case "ce":
       if (!msg.args[0]) {
         msg.channel.send("Sorry, please provide a color!");
@@ -65,6 +66,9 @@ bot.on("message", async (msg: Message) => {
       } catch (err) {
         msg.channel.send(`\`\`\`js\n${err}\n\`\`\``);
       }
+      break;
+    case "version":
+      msg.channel.send(`Running Nitro: v${VERSION}`);
     default:
       return;
   }

@@ -1,7 +1,7 @@
 /**
  * @todo Imports should be regulated, and utilities should be important via class
  */
-export const VERSION = "0.1.1-dev";
+export const VERSION = "0.1.2-dev";
 export const DEVELOPER = true;
 export { default as Client } from "./src/Client.ts";
 

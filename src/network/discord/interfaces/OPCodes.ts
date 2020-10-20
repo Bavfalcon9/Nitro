@@ -11,7 +11,7 @@ enum OPCodes {
     HELLO = 10,
     HEARTBEAT_ACK = 11,
     SYNC_GUILD = 12,
-    SYNC_CALL = 13
+    SYNC_CALL = 13,
 }
 
 export default OPCodes;

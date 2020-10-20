@@ -1,7 +1,7 @@
 import Base from "../Base.ts";
-import User from "../User.ts";
-import Guild from "./Guild.ts";
-import Role from "./Role.ts";
+import type User from "../User.ts";
+import type Guild from "./Guild.ts";
+import type Role from "./Role.ts";
 
 class GuildMember extends Base {
     public user: User;
@@ -13,20 +13,20 @@ class GuildMember extends Base {
     public mute: boolean;
     public joinedAt: number | Date;
     public hoistedRole: any;
-    public deaf: boolean 
+    public deaf: boolean;
 
     constructor(data: any, guild: Guild) {
         super(data.user.id);
         this.guild = guild;
         this.user = data.user;
-        this.owner = data.owner
+        this.owner = data.owner;
         this.roles = data.roles;
-        this.premiumSince = data.premium_since
-        this.nick = data.nick
+        this.premiumSince = data.premium_since;
+        this.nick = data.nick;
         this.mute = data.mute;
-        this.joinedAt = data.joined_at
+        this.joinedAt = data.joined_at;
         this.hoistedRole = data.hoisted_role;
-        this.deaf = data.deaf
+        this.deaf = data.deaf;
     }
 }
 

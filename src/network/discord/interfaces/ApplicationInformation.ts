@@ -1,4 +1,4 @@
-import User from "../../../structures/User.ts";
+import type User from "../../../structures/User.ts";
 
 export interface ApplicationInformation {
     id: string;

@@ -9,13 +9,13 @@ class Emoji extends Base {
     public animated: boolean;
 
     constructor(data: any) {
-        super(data.id)
-        this.roles = data.roles
+        super(data.id);
+        this.roles = data.roles;
         this.requireColons = data.require_colons;
-        this.name = data.name
+        this.name = data.name;
         this.managed = data.managed;
-        this.available = data.available
+        this.available = data.available;
         this.animated = data.animated;
     }
 }
-export default Emoji
+export default Emoji;

@@ -15,7 +15,7 @@ class User extends Base {
     }
 
     public get tag(): string {
-        return this.username + '#' + this.discriminator;
+        return this.username + "#" + this.discriminator;
     }
     // to do, more functions
 }

@@ -12,11 +12,11 @@ export enum UserFlags {
     System = 1 << 12,
     BugHunterLevel2 = 1 << 14,
     VerifiedBot = 1 << 16,
-    VerifiedBotDeveloper = 1 << 17
+    VerifiedBotDeveloper = 1 << 17,
 }
 
 export enum PremiumTypes {
     none = 0,
     classic = 1 << 0,
-    nitro = 1 << 1
+    nitro = 1 << 1,
 }

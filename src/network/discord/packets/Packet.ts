@@ -1,5 +1,5 @@
-import OPCodes from "../interfaces/OPCodes.ts";
-import Payload from "../interfaces/Payload.ts";
+import type OPCodes from "../interfaces/OPCodes.ts";
+import type Payload from "../interfaces/Payload.ts";
 
 abstract class Packet {
     private opCode: OPCodes;
@@ -16,7 +16,7 @@ abstract class Packet {
         return {
             d: this.data,
             op: this.opCode,
-            t: this.type
+            t: this.type,
         };
     }
 

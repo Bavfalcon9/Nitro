@@ -6,21 +6,21 @@ class Permission extends Base {
     public deny: number;
     public _json: object = {};
     constructor(allow: number, deny: number = 0) {
-        super('');
+        super("");
         this.allow = allow;
         this.deny = deny;
     }
     get json() {
-        if(!this._json) {
+        if (!this._json) {
             this._json = {} as any;
-            for(const perm of Object.keys(Permissions)) {
-                if(!perm.startsWith("all")) {
+            for (const perm of Object.keys(Permissions)) {
+                if (!perm.startsWith("all")) {
                     //@ts-ignore
-                    if(this.allow & Permissions[perm]) {
+                    if (this.allow & Permissions[perm]) {
                         //@ts-ignore
                         this._json[perm] = true;
                         //@ts-ignore
-                    } else if(this.deny & Permissions[perm]) {
+                    } else if (this.deny & Permissions[perm]) {
                         //@ts-ignore
                         this._json[perm] = false;
                     }
@@ -38,4 +38,4 @@ class Permission extends Base {
     toJSON(props = []) {
     }
 }
-export default Permission
+export default Permission;

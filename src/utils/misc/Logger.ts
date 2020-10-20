@@ -4,7 +4,7 @@ class Logger {
     public static DEBUG_ENABLED = false;
     private name: string;
 
-    constructor(name: string = 'NITRO') {
+    constructor(name: string = "NITRO") {
         this.name = name;
     }
 

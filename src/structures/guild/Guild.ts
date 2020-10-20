@@ -1,12 +1,12 @@
-import Base from '../Base.ts';
-import User from '../User.ts';
-import Channel from '../channel/Channel.ts';
-import { Region } from '../../network/discord/interfaces/Region.ts';
-import GuildMember from './GuildMember.ts';
-import Emoji from './Emoji.ts';
+import type { Region } from "../../network/discord/interfaces/Region.ts";
+import type Role from "./Role.ts";
+import Base from "../Base.ts";
+import User from "../User.ts";
+import Channel from "../channel/Channel.ts";
+import GuildMember from "./GuildMember.ts";
+import Emoji from "./Emoji.ts";
 //import GuildChannel from '../channel/GuildChannel.ts';
-import Role from './Role.ts';
-import RequestManager from '../../rest/RequestManager.ts';
+import RequestManager from "../../rest/RequestManager.ts";
 
 class Guild extends Base {
     public name: string;
@@ -26,7 +26,7 @@ class Guild extends Base {
     public explicitContent: number;
     public roles: Role[];
     public emojis?: Emoji[];
-    public features: any;//GuildFeature[];
+    public features: any; //GuildFeature[];
     public mfaLevel: number;
     public applicationId?: string;
     public systemChannelId?: string;
@@ -53,8 +53,8 @@ class Guild extends Base {
         this.icon = data.icon;
         this.description = data.description;
         this.splash = data.splash;
-        this.ownerID = data.owner_id
-        this.owner = this.members?.find(m => m.id === this.ownerID) || undefined; // rewrite in socket events or handle
+        this.ownerID = data.owner_id;
+        this.owner = this.members?.find((m) => m.id === this.ownerID) || undefined; // rewrite in socket events or handle
         this.permissions = data.permissions;
         this.region = data.region;
         this.afkChannel = data.afk_channel_id;
@@ -77,36 +77,45 @@ class Guild extends Base {
         this.unavailable = data.unavailable || false;
         this.memberCount = data.member_count || -1;
         this.voiceStates = data.voiceStates || [];
-        this.members = data.members?.map((m: any) => new GuildMember(m, this)) || [];
+        this.members = data.members?.map((m: any) => new GuildMember(m, this)) ||
+            [];
         this.channels = data.channels?.map((c: any) => new Channel(c)) || [];
         this.preferredLocale = data.preferred_locale;
         this.premiumTier = data.premium_tier;
-        this.subscriptionCount = data.premium_subscription_count || 0;   
+        this.subscriptionCount = data.premium_subscription_count || 0;
     }
 
     public static dummyObject(): Guild {
         return new Guild({
-             id: '0',
-             name: '0',
-             description: '0',
-             splash: '0',
-             owner: null,
-             permissions: null,
-             region: '0',
-             afkChannel: null,
-             afkTimeout: null,
+            id: "0",
+            name: "0",
+            description: "0",
+            splash: "0",
+            owner: null,
+            permissions: null,
+            region: "0",
+            afkChannel: null,
+            afkTimeout: null,
         });
-   }
-
-    public get paritial(): boolean { return false }
-
-    /**
-     * Guild Action Methods
-     */
-    public async ban(mid: string, deleteMessagesDays?: 1 | 2 | 3 | 4 | 5 | 6 | 7, reason?: string): Promise<void> { 
-        await RequestManager.banMember(this.id, mid, deleteMessagesDays, reason)
     }
 
-    public async kick(mid: string, reason?: string): Promise<void> { await RequestManager.kickMember(this.id, mid, reason) }
+    public get paritial(): boolean {
+        return false;
+    }
+
+    /**
+       * Guild Action Methods
+       */
+    public async ban(
+        mid: string,
+        deleteMessagesDays?: 1 | 2 | 3 | 4 | 5 | 6 | 7,
+        reason?: string,
+    ): Promise<void> {
+        await RequestManager.banMember(this.id, mid, deleteMessagesDays, reason);
+    }
+
+    public async kick(mid: string, reason?: string): Promise<void> {
+        await RequestManager.kickMember(this.id, mid, reason);
+    }
 }
 export default Guild;

@@ -1,11 +1,11 @@
-import User from './User.ts'
-import Base from './Base.ts';
-import Channel from './channel/Channel.ts';
-import TextChannel from './channel/TextChannel.ts';
-import MessageContent from '../network/discord/interfaces/MessageContent.ts';
-import RequestManager from '../rest/RequestManager.ts';
-import Sleep from '../utils/misc/Sleep.ts';
-import Guild from '../structures/guild/Guild.ts';
+import User from "./User.ts";
+import Base from "./Base.ts";
+import Channel from "./channel/Channel.ts";
+import TextChannel from "./channel/TextChannel.ts";
+import type MessageContent from "../network/discord/interfaces/MessageContent.ts";
+import RequestManager from "../rest/RequestManager.ts";
+import Sleep from "../utils/misc/Sleep.ts";
+import Guild from "../structures/guild/Guild.ts";
 
 class Message extends Base {
     public type: number;
@@ -18,7 +18,6 @@ class Message extends Base {
     public embeds: any[]; // Leave as any for now
     public edited_timestamp: any;
     public guild_id: string;
-    public guild: Guild;
     public content: string;
     public channel_id: string;
     public channel: TextChannel;
@@ -38,8 +37,7 @@ class Message extends Base {
         this.mentions = data.mentions;
         this.flags = data.flags;
         this.embeds = data.embeds;
-        this.guild_id = data.guild_id
-        this.guild = (this.guild_id === null) ? this.genDummyChannel().guild : channel.guild;
+        this.guild_id = data.guild_id;
         this.content = data.content;
         this.channel_id = data.channel_id;
         this.channel = channel || this.genDummyChannel();
@@ -49,31 +47,31 @@ class Message extends Base {
     }
 
     /**
-     * Gets the command for the message sent!
-     * This function also sets the arguments of the command for you! (pretty neat, huh?)
-     */
-    public getCommand(prefix: string = '!'): string|null {
+       * Gets the command for the message sent!
+       * This function also sets the arguments of the command for you! (pretty neat, huh?)
+       */
+    public getCommand(prefix: string = "!"): string | null {
         if (this.content && this.content.indexOf(prefix) === 0) {
             this.args = this.content.slice(prefix.length).trim().split(/ +/g);
-            return this.args.shift()?.toLowerCase() || '';
+            return this.args.shift()?.toLowerCase() || "";
         }
         return null;
     }
 
     /**
-     * Send a message in response into the origin channel.
-     * @param msg - Message
-     */
+       * Send a message in response into the origin channel.
+       * @param msg - Message
+       */
     public async reply(msg: string): Promise<Message> {
-        return this.channel.send('<@' + this.author.id + '>, ' + msg);
+        return this.channel.send("<@" + this.author.id + ">, " + msg);
     }
 
     /**
-     * Edit a message
-     * @param content - Content
-     */
-    public async edit(content: string|MessageContent): Promise<Message> {
-        if (typeof content === 'string') {
+       * Edit a message
+       * @param content - Content
+       */
+    public async edit(content: string | MessageContent): Promise<Message> {
+        if (typeof content === "string") {
             content = { content: content };
         }
         return RequestManager.editMessage(this.channel_id, this.id, content);
@@ -83,7 +81,10 @@ class Message extends Base {
         if (ms > 0) {
             await Sleep(ms);
         }
-        const res: boolean = await RequestManager.deleteMessage(this.channel_id, this.id);
+        const res: boolean = await RequestManager.deleteMessage(
+            this.channel_id,
+            this.id,
+        );
         return res;
     }
 
@@ -96,7 +97,7 @@ class Message extends Base {
 
     private genDummyGuild(): Guild {
         const DummyObj = Guild.dummyObject();
-        DummyObj.id = this.guild_id
+        DummyObj.id = this.guild_id;
         return new Guild(DummyObj);
     }
 }

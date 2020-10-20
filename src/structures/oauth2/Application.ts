@@ -1,5 +1,5 @@
-import Base from '../Base.ts';
-import User from '../User.ts';
+import Base from "../Base.ts";
+import User from "../User.ts";
 
 class Application extends Base {
     public name: string;
@@ -18,7 +18,7 @@ class Application extends Base {
     public cover_image?: string;
 
     constructor(data: any) {
-        super(data.id || '');
+        super(data.id || "");
         this.name = data.name;
         this.icon = data.icon;
         this.description = data.description;

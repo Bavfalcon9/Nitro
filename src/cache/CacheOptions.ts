@@ -1,4 +1,4 @@
-import Base from '../structures/Base.ts';
+import type Base from "../structures/Base.ts";
 
 export interface Settings {
     enabled?: boolean; // should nitro cache? Defaults to false
@@ -19,31 +19,31 @@ export interface CacheOptions {
     channels?: Settings;
     messages?: Settings;
     invites?: Settings;
-    $options?: HardOptions;
+    database?: HardOptions;
 }
 
 export const OptimizedOptions: CacheOptions = {
     guilds: {
-        enabled: false
+        enabled: false,
     },
     users: {
-        enabled: false
+        enabled: false,
     },
     channels: {
         enabled: true,
         partial: true,
         max: 250000,
-        refresh: true
+        refresh: true,
     },
     messages: {
         enabled: true,
         partial: true,
         max: 250000,
-        refresh: true
+        refresh: true,
     },
     invites: {
-        enabled: false
-    }
+        enabled: false,
+    },
 };
 
 export const DefaultOptions: CacheOptions = {
@@ -51,30 +51,30 @@ export const DefaultOptions: CacheOptions = {
         enabled: true,
         partial: true,
         max: 250000,
-        refresh: true
+        refresh: true,
     },
     users: {
         enabled: true,
         partial: true,
         max: 250000,
-        refresh: true
+        refresh: true,
     },
     channels: {
         enabled: true,
         partial: true,
         max: 250000,
-        refresh: true
+        refresh: true,
     },
     messages: {
         enabled: true,
         partial: true,
         max: 250000,
-        refresh: true
+        refresh: true,
     },
     invites: {
         enabled: true,
         partial: true,
         max: 250000,
-        refresh: true
-    }
-}
+        refresh: true,
+    },
+};

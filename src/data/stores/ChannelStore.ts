@@ -7,42 +7,42 @@ import BaseStore from "../BaseStore.ts";
 
 // we need this because channels are multiple objects
 class ChannelStore extends BaseStore {
-  public constructor(client: Client) {
-    super(client);
-    this.structure = Channel;
-  }
-
-  public has(idInstance: any | string): boolean {
-    let id: string = this.resolveId(idInstance) || "_";
-    return this.cache.has(id);
-  }
-
-  public resolve(
-    idInstance: any | string,
-  ): null | TextChannel | VoiceChannel | CategoryChannel {
-    if (idInstance instanceof this.structure) return idInstance;
-    if (typeof idInstance === "string") {
-      return this.cache.get(idInstance) || null;
+    public constructor(client: Client) {
+        super(client);
+        this.structure = Channel;
     }
-    return null;
-  }
 
-  protected forceResolve(
-    idInstance: any | string,
-  ): null | TextChannel | VoiceChannel | CategoryChannel {
-    if (idInstance instanceof this.structure) return idInstance;
-    if (typeof idInstance === "string") {
-      return this.cache.get(idInstance) || null;
+    public has(idInstance: any | string): boolean {
+        let id: string = this.resolveId(idInstance) || "_";
+        return this.cache.has(id);
     }
-    return new this.structure(idInstance);
-  }
 
-  public resolveId(idInstance: any | string): string | null {
-    if (idInstance instanceof this.structure) return idInstance.id;
-    if (typeof idInstance === "string") {
-      return this.cache.get(idInstance).id || null;
+    public resolve(
+        idInstance: any | string,
+    ): null | TextChannel | VoiceChannel | CategoryChannel {
+        if (idInstance instanceof this.structure) return idInstance;
+        if (typeof idInstance === "string") {
+            return this.cache.get(idInstance) || null;
+        }
+        return null;
     }
-    return null;
-  }
+
+    protected forceResolve(
+        idInstance: any | string,
+    ): null | TextChannel | VoiceChannel | CategoryChannel {
+        if (idInstance instanceof this.structure) return idInstance;
+        if (typeof idInstance === "string") {
+            return this.cache.get(idInstance) || null;
+        }
+        return new this.structure(idInstance);
+    }
+
+    public resolveId(idInstance: any | string): string | null {
+        if (idInstance instanceof this.structure) return idInstance.id;
+        if (typeof idInstance === "string") {
+            return this.cache.get(idInstance).id || null;
+        }
+        return null;
+    }
 }
 export default ChannelStore;

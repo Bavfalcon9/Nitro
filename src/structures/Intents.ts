@@ -1,5 +1,5 @@
 class Intents {
-  public parse() {
-    return 8;
-  }
+    public parse() {
+        return 8;
+    }
 }

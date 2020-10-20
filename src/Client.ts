@@ -17,100 +17,100 @@ import type Intents from "./utils/discord/Intents.ts";
 import ProtectedStore, { randomstring } from "./data/ProtectedStore.ts";
 
 class Client extends EventHandlerv2 {
-  public application: Application | null;
-  public lastACK?: number;
-  public sessionId: string;
-  public user!: ClientUser;
-  public intents?: Intents;
-  public protectedStore!: ProtectedStore;
-  private requestManager!: RequestManager;
-  private wsm?: WebsocketManager;
-  private heartInterval?: number;
-  private dataStore: DataStore;
+    public application: Application | null;
+    public lastACK?: number;
+    public sessionId: string;
+    public user!: ClientUser;
+    public intents?: Intents;
+    public protectedStore!: ProtectedStore;
+    private requestManager!: RequestManager;
+    private wsm?: WebsocketManager;
+    private heartInterval?: number;
+    private dataStore: DataStore;
 
-  constructor(cacheOptions: CacheOptions = DefaultOptions) {
-    super();
-    this.application = null;
-    this.dataStore = new DataStore(this, cacheOptions);
-    this.sessionId = "0";
-  }
-
-  public connect(token: string): void {
-    if (this.wsm !== undefined) {
-      throw new Error(
-        "Client already connected! Please terminate the existing connection.",
-      );
+    constructor(cacheOptions: CacheOptions = DefaultOptions) {
+        super();
+        this.application = null;
+        this.dataStore = new DataStore(this, cacheOptions);
+        this.sessionId = "0";
     }
 
-    this.protectedStore = new ProtectedStore();
-    this.protectedStore.set('token', token);
-    this.requestManager = new RequestManager(this, token);
-    this.wsm = new WebsocketManager();
-    try {
-      this.wsm.init(this, token);
-      this.resolveApplication();
-    } catch (err) {
-      throw err;
+    public connect(token: string): void {
+        if (this.wsm !== undefined) {
+            throw new Error(
+                "Client already connected! Please terminate the existing connection.",
+            );
+        }
+
+        this.protectedStore = new ProtectedStore();
+        this.protectedStore.set('token', token);
+        this.requestManager = new RequestManager(this, token);
+        this.wsm = new WebsocketManager();
+        try {
+            this.wsm.init(this, token);
+            this.resolveApplication();
+        } catch (err) {
+            throw err;
+        }
     }
-  }
 
-  public initHeartbeat(interval: number): void {
-    if (this.heartInterval) {
-      throw new Error("Heartbeat already initialized");
+    public initHeartbeat(interval: number): void {
+        if (this.heartInterval) {
+            throw new Error("Heartbeat already initialized");
+        }
+        this.heartInterval = setInterval(() => {
+            this.sendPacket(new HeartBeatPacket(interval));
+        }, interval);
     }
-    this.heartInterval = setInterval(() => {
-      this.sendPacket(new HeartBeatPacket(interval));
-    }, interval);
-  }
 
-  public reconnect(): void {
-    // to do
-  }
-
-  public disconnect(): void {
-    if (this.wsm === undefined) throw "Client already disconnected.";
-    this.wsm?.terminate();
-    this.wsm = undefined;
-    clearInterval(this.heartInterval);
-    this.heartInterval = undefined;
-  }
-
-  public sendPacket(pk: Packet): void {
-    this.wsm?.send(pk.parsePacket());
-  }
-
-  private async resolveApplication(): Promise<void> {
-    const res: ApplicationInformation | boolean = await RequestManager
-      .getApplication();
-    if (typeof res === "boolean") {
-      return;
-    } else {
-      this.application = new Application(res);
+    public reconnect(): void {
+        // to do
     }
-  }
 
-  public get channels(): Map<string, Channel> {
-    return this.dataStore.channels;
-  }
+    public disconnect(): void {
+        if (this.wsm === undefined) throw "Client already disconnected.";
+        this.wsm?.terminate();
+        this.wsm = undefined;
+        clearInterval(this.heartInterval);
+        this.heartInterval = undefined;
+    }
 
-  public get guilds(): Map<string, Guild> {
-    return this.dataStore.guilds;
-  }
+    public sendPacket(pk: Packet): void {
+        this.wsm?.send(pk.parsePacket());
+    }
 
-  public get users(): Map<string, User> {
-    return this.dataStore.users;
-  }
+    private async resolveApplication(): Promise<void> {
+        const res: ApplicationInformation | boolean = await RequestManager
+            .getApplication();
+        if (typeof res === "boolean") {
+            return;
+        } else {
+            this.application = new Application(res);
+        }
+    }
 
-  public get invites(): Map<string, Invite> {
-    return this.dataStore.invites;
-  }
+    public get channels(): Map<string, Channel> {
+        return this.dataStore.channels;
+    }
 
-  public get messages(): Map<string, Message> {
-    return this.dataStore.messages;
-  }
+    public get guilds(): Map<string, Guild> {
+        return this.dataStore.guilds;
+    }
 
-  public get _dataStore(): DataStore {
-    return this.dataStore;
-  }
+    public get users(): Map<string, User> {
+        return this.dataStore.users;
+    }
+
+    public get invites(): Map<string, Invite> {
+        return this.dataStore.invites;
+    }
+
+    public get messages(): Map<string, Message> {
+        return this.dataStore.messages;
+    }
+
+    public get _dataStore(): DataStore {
+        return this.dataStore;
+    }
 }
 export default Client;

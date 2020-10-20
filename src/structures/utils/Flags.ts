@@ -1,4 +1,4 @@
 class Flags {
-  constructor() {
-  }
+    constructor() {
+    }
 }

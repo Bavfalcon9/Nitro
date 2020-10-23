@@ -4,13 +4,11 @@ import Channel from "./Channel.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 class VoiceChannel extends GuildChannel {
-    public guild: Guild | undefined;
     public bitrate: number;
     public userLimit: number;
 
     constructor(data: any, guild?: Guild) {
-        super(data);
-        this.guild = guild;
+        super(data, guild);
         this.bitrate = data.bitrate;
         this.userLimit = data.user_limit;
     }

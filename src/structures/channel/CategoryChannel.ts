@@ -8,11 +8,9 @@ import PermissionOverwite from "../PermissionOverwrite.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 class CategoryChannel extends GuildChannel {
-    public guild: Guild | undefined;
 
     constructor(data: any, guild?: Guild) {
-        super(data);
-        this.guild = guild;
+        super(data, guild);
     }
 
     public static dummyObject(): CategoryChannel {

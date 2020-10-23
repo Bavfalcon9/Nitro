@@ -1,12 +1,12 @@
 import type { Region } from "../../network/discord/interfaces/Region.ts";
 import type Role from "./Role.ts";
 import Base from "../Base.ts";
-import User from "../User.ts";
-import Channel from "../channel/Channel.ts";
+import User from "../User.ts";  
 import GuildMember from "./GuildMember.ts";
 import Emoji from "./Emoji.ts";
 //import GuildChannel from '../channel/GuildChannel.ts';
 import RequestManager from "../../rest/RequestManager.ts";
+import GuildChannel from "../channel/GuildChannel.ts";
 
 class Guild extends Base {
     public name: string;
@@ -17,7 +17,7 @@ class Guild extends Base {
     public ownerID: string;
     public permissions: any; // to do
     public region: Region;
-    public afkChannel: Channel;
+    public afkChannel: GuildChannel;
     public afkTimeout: number;
     public widgetEnabled?: boolean;
     public widgetId?: string;
@@ -38,7 +38,7 @@ class Guild extends Base {
     public memberCount?: number;
     public voiceStates?: any;
     public members?: GuildMember[];
-    public channels: Channel[]; //Channels[];
+    public channels: GuildChannel[]; //Channels[];
     public maxPresences?: number;
     public maxMembers?: number;
     public vanityUrl?: string;
@@ -79,7 +79,7 @@ class Guild extends Base {
         this.voiceStates = data.voiceStates || [];
         this.members = data.members?.map((m: any) => new GuildMember(m, this)) ||
             [];
-        this.channels = data.channels?.map((c: any) => new Channel(c)) || [];
+        this.channels = data.channels?.map((c: any) => new GuildChannel(c)) || [];
         this.preferredLocale = data.preferred_locale;
         this.premiumTier = data.premium_tier;
         this.subscriptionCount = data.premium_subscription_count || 0;

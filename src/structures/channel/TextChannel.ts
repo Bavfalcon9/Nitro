@@ -9,15 +9,13 @@ import Client from "../../Client.ts";
 import GuildChannel from "./GuildChannel.ts";
 
 class TextChannel extends GuildChannel {
-    public guild: Guild | undefined;
     public rateLimitPerUser: number;
     public lastPinTimestamp: number;
     public topic: string;
     public lastMessageID: string;
 
     constructor(data: any, guild?: Guild) {
-        super(data);
-        this.guild = guild;
+        super(data, guild);
         this.rateLimitPerUser = data.rate_limit_per_user;
         this.topic = data.topic;
         this.lastMessageID = data.last_message_id;

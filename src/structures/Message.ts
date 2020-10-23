@@ -21,6 +21,7 @@ class Message extends Base {
     public content: string;
     public channel_id: string;
     public channel: TextChannel;
+    public guild: Guild;
     public author: User;
     public attachments: any[]; // Leave as any for now
     public args: string[];
@@ -41,6 +42,7 @@ class Message extends Base {
         this.content = data.content;
         this.channel_id = data.channel_id;
         this.channel = channel || this.genDummyChannel();
+        this.guild = this.channel.guild || this.genDummyGuild();
         this.author = new User(data.author);
         this.attachments = data.attachments;
         this.args = [];

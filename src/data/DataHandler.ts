@@ -225,8 +225,9 @@ class DataHandler {
      * @param packet
      */
     public messageCreate(client: Client, data: any): Message {
-        let message: Message, channel: TextChannel | undefined;
-        channel = client.channels.get(data.id) as TextChannel | undefined;
+        let message: Message, channel: TextChannel | undefined, guild: Guild | undefined;
+        guild = client.guilds.get(data.guild_id)
+        channel = client.channels.get(data.channel_id) as TextChannel | undefined;
         message = new Message(data, channel);
         client._dataStore._users?.set(message.author);
         client._dataStore._messages?.set(message);

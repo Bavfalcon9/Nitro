@@ -53,7 +53,7 @@ export default class ProtectedDataStore {
 	 * Get a hashed value
 	 * @param key
 	 */
-	private getHashed(key: string): any | null {
+	public getHashed(key: string): any | null {
 		let valBuf = this.#hashStore.get(key) || null;
 		if (valBuf === null) {
 			return null;

@@ -1,25 +1,26 @@
-export default class Collection<K, V extends { id: string }> extends Map<K, V> {
-	private base: any;
-	private limit: number;
+import Base from '../structures/Base.ts';
 
-	/**
-	 * @param base Base class of the Collection
-	 * @param limit Maximum capacity of the Collection (defaults to limitless)
-	 */
+export default class Collection<K, V> extends Map<K, V> {
+	// I will fix the generics in the future
+	public baseObject: any;
+	public limit: number;
 
-	public constructor(base: V, limit: number = Infinity) {
+	constructor(baseObject: Object, limit: number = Infinity) {
 		super();
-		this.base = base;
+		this.baseObject = baseObject;
 		this.limit = limit;
 	}
 
-	public add(obj: V, extra?: unknown[], replace: boolean = true): V {
+	public add(obj: V, extra?: any, replace: boolean = true): V {
 		if (this.limit === 0) {
-			return obj instanceof this.base ||
-				obj.constructor.name === this.base.name
+			return obj instanceof this.baseObject ||
+				// @ts-ignore
+				obj.constructor.name === this.baseObject.name
 				? obj
-				: new this.base(obj, extra);
+				: new this.baseObject(obj, extra);
 		}
+		// @ts-ignore
+
 		if (obj.id == null) {
 			throw new Error('Missing object id');
 		}
@@ -30,11 +31,12 @@ export default class Collection<K, V extends { id: string }> extends Map<K, V> {
 		}
 		if (
 			!(
-				obj instanceof this.base ||
-				obj.constructor.name === this.base.name
+				obj instanceof this.baseObject ||
+				// @ts-ignore
+				obj.constructor.name === this.baseObject.name
 			)
 		) {
-			obj = new this.base(obj, extra);
+			obj = new this.baseObject(obj, extra);
 		}
 		// @ts-ignore
 		this.set(obj.id, obj);
@@ -48,7 +50,63 @@ export default class Collection<K, V extends { id: string }> extends Map<K, V> {
 		return obj;
 	}
 
-	public remove(obj: V) {
+	every(func: Function): boolean {
+		for (const item of this.values()) {
+			if (!func(item)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	filter(func: Function): V[] {
+		const arr: V[] = [];
+		for (const item of this.values()) {
+			if (func(item)) {
+				arr.push(item);
+			}
+		}
+		return arr;
+	}
+
+	find(func: Function) {
+		for (const item of this.values()) {
+			if (func(item)) {
+				return item;
+			}
+		}
+		return undefined;
+	}
+
+	map(func: Function) {
+		const arr: V[] = [];
+		for (const item of this.values()) {
+			arr.push(func(item));
+		}
+		return arr;
+	}
+
+	random() {
+		const index = Math.floor(Math.random() * this.size);
+		const iter = this.values();
+		for (let i = 0; i < index; ++i) {
+			iter.next();
+		}
+		return iter.next().value;
+	}
+
+	reduce(func: Function, initialValue: number) {
+		const iter = this.values();
+		let val: number;
+		let result =
+			initialValue === undefined ? iter.next().value : initialValue;
+		while ((val = iter.next().value) !== undefined) {
+			result = func(result, val);
+		}
+		return result;
+	}
+
+	remove(obj: V) {
 		// @ts-ignore
 		const item = this.get(obj.id);
 		if (!item) {
@@ -59,7 +117,7 @@ export default class Collection<K, V extends { id: string }> extends Map<K, V> {
 		return item;
 	}
 
-	public some(func: Function): boolean {
+	some(func: Function) {
 		for (const item of this.values()) {
 			if (func(item)) {
 				return true;
@@ -68,59 +126,20 @@ export default class Collection<K, V extends { id: string }> extends Map<K, V> {
 		return false;
 	}
 
-	public every(func: Function): boolean {
+	toString() {
+		return `[Collection<${this.baseObject.name}>]`;
+	}
+
+	toArray() {
+		return [...this.values()];
+	}
+
+	toJSON() {
+		const json: any = {};
 		for (const item of this.values()) {
-			if (!func(item)) {
-				return false;
-			}
+			// @ts-ignore
+			json[item.id] = item;
 		}
-		return true;
-	}
-
-	public random(): V {
-		const index = Math.floor(Math.random() * this.size);
-		const iter = this.values();
-		for (let i = 0; i < index; ++i) {
-			iter.next();
-		}
-		return iter.next().value;
-	}
-
-	public reduce(func: Function, initialValue?: number) {
-		const iter = this.values();
-		let val;
-		let result =
-			initialValue === undefined ? iter.next().value : initialValue;
-		while ((val = iter.next().value) !== undefined) {
-			result = func(result, val);
-		}
-		return result;
-	}
-
-	public map(func: Function): V[] {
-		const arr: V[] = [];
-		for (const item of this.values()) {
-			arr.push(func(item));
-		}
-		return arr;
-	}
-
-	public find(func: Function): V | undefined {
-		for (const item of this.values()) {
-			if (func(item)) {
-				return item;
-			}
-		}
-		return undefined;
-	}
-
-	public filter(func: Function): V[] {
-		const arr = [];
-		for (const item of this.values()) {
-			if (func(item)) {
-				arr.push(item);
-			}
-		}
-		return arr;
+		return json;
 	}
 }

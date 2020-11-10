@@ -1,7 +1,4 @@
-import {
-	GenericFunction,
-	WrappedFunction,
-} from 'https://deno.land/std@0.74.0/node/events.ts';
+import { GenericFunction, WrappedFunction } from '../deps.ts';
 import { EventEmitter } from '../deps.ts';
 import CacheOptions from './cache/CacheOptions.ts';
 import Intents from './constants/Intents.ts';

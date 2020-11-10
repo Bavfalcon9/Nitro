@@ -14,7 +14,8 @@ Nitro is a Deno wrapper for the discord api designed for performance, and hastel
 ## Getting started
 For those who want to get something up, heres a little example on how to use the framework.
 ```ts
-import * as Nitro from 'https://deno.land/x/nitro';
+import * as Nitro from 'https://deno.land/x/Nitro@v0.2.0-beta/mod.ts';
+
 const client: Nitro.Client = new Nitro.Client();
 client.connect('mytoken');
 // listening to our event
@@ -54,7 +55,8 @@ If you have caching disabled, it is important to note that attempting to access 
 
 **Example 1:** Getting cached users from the client.
 ```ts
-import * as Nitro from 'https://deno.land/x/nitro';
+import * as Nitro from 'https://deno.land/x/Nitro@v0.2.0-beta/mod.ts';
+
 const token = 'MyToken';
 const client: Nitro.Client = new Nitro.Client({
     caching: {

@@ -2,6 +2,7 @@ import { EventEmitter } from '../deps.ts';
 import CacheOptions from './cache/CacheOptions.ts';
 import Intents from './constants/Intents.ts';
 import Shard from './gateway/Shard.ts';
+import User from './structures/User.ts';
 import ProtectedDataStore from './util/ProtectedDataStore.ts';
 
 interface ClientOptions {
@@ -33,9 +34,16 @@ const DefaultOptions: ClientOptions = {
 
 export default class Client extends EventEmitter {
 	// public protectedDataStore: ProtectedDataStore; I WILL WORK ON THIS, it's unstable
-	private token: string;
+
+	public user!: User;
+
 	public shard: Shard;
+	public sessionID: string = '0';
+
 	public opt: ClientOptions;
+
+	private token: string;
+
 	public constructor(token: string, opt: ClientOptions = DefaultOptions) {
 		super();
 		// this.protectedDataStore = new ProtectedDataStore();

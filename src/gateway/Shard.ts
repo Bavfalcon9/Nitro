@@ -2,6 +2,7 @@ import { EventEmitter, Buffer } from '../../deps.ts';
 import Client from '../Client.ts';
 import Endpoints from '../constants/Endpoints.ts';
 import OPCodes from '../constants/OPCodes.ts';
+import ClientUser from '../structures/ClientUser.ts';
 export default class Shard extends EventEmitter {
 	private client: Client;
 	private token: string;
@@ -71,5 +72,9 @@ export default class Shard extends EventEmitter {
 		}, this.heartbeatInterval);
 	}
 
-	private onReady(data: any) {}
+	private onReady(data: any) {
+		this.client.user = new ClientUser(data.user);
+		this.client.sessionID = data.session_id;
+		this.client.emit('ready', this.client.sessionID);
+	}
 }

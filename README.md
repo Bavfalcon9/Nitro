@@ -1,6 +1,6 @@
 # Nitro
 
-A framework for Discord written in TS designed for perfomance using the Deno runtime.
+A API Wrapper to interface with the Discord API. Written in TS designed for perfomance using the Deno runtime.
 
 
 ## Why Nitro?

@@ -1,4 +1,4 @@
-import Guild from '../Guild.ts';
+import Guild from '../guild/Guild.ts';
 import GuildChannel from './GuildChannel.ts';
 
 export default class VoiceChannel extends GuildChannel {

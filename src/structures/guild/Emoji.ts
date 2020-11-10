@@ -1,4 +1,4 @@
-import Base from './Base.ts';
+import Base from '../Base.ts';
 
 export default class Emoji extends Base {
 	public roles: string[];

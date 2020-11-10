@@ -47,7 +47,7 @@ export default class REST {
 			}
 			endpoint += '?' + str.substring(1);
 		}
-		let res = await fetch(Endpoints.BASE_URL + endpoint, {
+		let res = await fetch(Endpoints.REST_URL + endpoint, {
 			method,
 			headers,
 			body: JSON.stringify(body),

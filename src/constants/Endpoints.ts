@@ -3,6 +3,7 @@ export default class Endpoints {
 	public static BASE_URL = '/api/v' + Endpoints.REST_VERSION;
 	public static CDN_URL = 'https://cdn.discordapp.com';
 	public static GATEWAY_URL = `wss://gateway.discord.gg/?v=8&encoding=json`;
+	public static REST_URL = 'https://discord.com/api/v8';
 
 	public static CHANNEL = (chanID: string) => `/channels/${chanID}`;
 	public static CHANNEL_BULK_DELETE = (chanID: string) =>

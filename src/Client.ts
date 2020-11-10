@@ -3,8 +3,9 @@ import { EventEmitter } from '../deps.ts';
 import CacheOptions from './cache/CacheOptions.ts';
 import Intents from './constants/Intents.ts';
 import Shard from './gateway/Shard.ts';
+import REST from './rest/REST.ts';
 import Channel from './structures/channels/Channel.ts';
-import Guild from './structures/Guild.ts';
+import Guild from './structures/guild/Guild.ts';
 import User from './structures/User.ts';
 import Collection from './util/Collection.ts';
 import ProtectedDataStore from './util/ProtectedDataStore.ts';
@@ -103,6 +104,8 @@ export default class Client extends EventEmitter {
 			this.opt.cacheOptions.channels.$max
 		);
 		this.users = new Collection(User, this.opt.cacheOptions.users.$max);
+
+		REST.setToken(token);
 	}
 
 	public on(

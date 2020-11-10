@@ -8,7 +8,8 @@ import GuildChannel from '../structures/channels/GuildChannel.ts';
 import TextChannel from '../structures/channels/TextChannel.ts';
 import VoiceChannel from '../structures/channels/VoiceChannel.ts';
 import ClientUser from '../structures/ClientUser.ts';
-import Guild from '../structures/Guild.ts';
+import Guild from '../structures/guild/Guild.ts';
+import Message from '../structures/Message.ts';
 
 export default class Shard extends EventEmitter {
 	private client: Client;
@@ -102,7 +103,7 @@ export default class Shard extends EventEmitter {
 	}
 
 	private onChannelCreate(data: any) {
-		let channel: Channel;
+		let channel: any;
 		let guild =
 			this.client.guilds.get(data.guild_id) ||
 			new Guild({
@@ -132,6 +133,7 @@ export default class Shard extends EventEmitter {
 				} else {
 					channel = new Channel(data);
 				}
+				break;
 		}
 
 		if (this.client.opt.cacheOptions.channels.$enabled) {
@@ -139,5 +141,37 @@ export default class Shard extends EventEmitter {
 		}
 
 		this.client.emit('channelCreate', channel);
+	}
+
+	private onMessageCreate(data: any) {
+		let channel: TextChannel =
+			<TextChannel>this.client.channels.get(data.channel_id) ||
+			new TextChannel(
+				{
+					id: '0',
+					name: '0',
+					guildID: '0',
+					position: 0,
+					permissionOverwrites: [],
+					rateLimit: 0,
+					nsfw: false,
+					topic: '0',
+					lastMessageId: '0',
+					parentID: '0',
+				},
+				new Guild({
+					id: '0',
+					name: '0',
+					description: '0',
+					splash: '0',
+					owner: null,
+					permissions: null,
+					region: '0',
+					afkChannel: null,
+					afkTimeout: null,
+				})
+			);
+		const msg = new Message(data, channel);
+		this.client.emit('messageCreate', msg);
 	}
 }

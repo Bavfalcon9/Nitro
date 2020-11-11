@@ -6,7 +6,7 @@ Nitro is a Deno wrapper for the discord api designed for performance, and hastel
 #### Features:
 - Fast and extensible
 - Performant
-- No dependencies
+- Minimal dependencies
 - Object Oriented
 - Controlled Caching
 - Native or old Event types.
